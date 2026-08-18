@@ -1,0 +1,165 @@
+<main class="access-shell auth-page">
+  <div class="auth-scene" aria-hidden="true">
+    <span class="auth-door"></span>
+    <span class="auth-sun"></span>
+  </div>
+
+  <section class="access-card auth-card" aria-labelledby="create-account-heading">
+    <img
+      class="brand-lockup auth-logo"
+      src="/assets/brand/staybook-logo-slogan.svg"
+      alt="StayBook"
+      width="970"
+      height="260"
+    />
+
+    <h1 id="create-account-heading" class="auth-heading">
+      {{ i18n.translate('auth.signUp.title') }}
+    </h1>
+
+    <form
+      class="form auth-form"
+      novalidate
+      [formGroup]="form"
+      [attr.aria-busy]="isSubmitting()"
+      (ngSubmit)="submit()"
+    >
+      @if (formErrorKey(); as errorKey) {
+        <p class="alert alert--error auth-alert" role="alert">
+          {{ i18n.translate(errorKey) }}
+        </p>
+      }
+
+      <div class="field">
+        <label for="create-account-name">{{ i18n.translate('auth.name') }}</label>
+        <input
+          id="create-account-name"
+          type="text"
+          autocomplete="name"
+          maxlength="120"
+          formControlName="displayName"
+          [placeholder]="i18n.translate('auth.name.placeholder')"
+          [attr.aria-invalid]="shouldShowError(form.controls.displayName)"
+          [attr.aria-describedby]="
+            shouldShowError(form.controls.displayName) ? 'create-account-name-error' : null
+          "
+        />
+        @if (shouldShowError(form.controls.displayName)) {
+          <p id="create-account-name-error" class="field-error">
+            @if (form.controls.displayName.hasError('required')) {
+              {{ i18n.translate('validation.required') }}
+            } @else {
+              {{ i18n.translate('validation.maxLength', { value: 120 }) }}
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="create-account-email">{{ i18n.translate('auth.email') }}</label>
+        <input
+          id="create-account-email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          formControlName="email"
+          [placeholder]="i18n.translate('auth.email.placeholder')"
+          [attr.aria-invalid]="shouldShowError(form.controls.email)"
+          [attr.aria-describedby]="
+            shouldShowError(form.controls.email) ? 'create-account-email-error' : null
+          "
+        />
+        @if (shouldShowError(form.controls.email)) {
+          <p id="create-account-email-error" class="field-error">
+            @if (form.controls.email.hasError('required')) {
+              {{ i18n.translate('validation.required') }}
+            } @else {
+              {{ i18n.translate('validation.email') }}
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="create-account-password">{{ i18n.translate('auth.password') }}</label>
+        <input
+          id="create-account-password"
+          type="password"
+          autocomplete="new-password"
+          maxlength="1024"
+          formControlName="password"
+          [placeholder]="i18n.translate('auth.password.placeholder')"
+          [attr.aria-invalid]="shouldShowError(form.controls.password)"
+          [attr.aria-describedby]="
+            shouldShowError(form.controls.password)
+              ? 'create-account-password-hint create-account-password-error'
+              : 'create-account-password-hint'
+          "
+        />
+        <p id="create-account-password-hint" class="field-hint">
+          {{ i18n.translate('auth.password.hint') }}
+        </p>
+        @if (shouldShowError(form.controls.password)) {
+          <p id="create-account-password-error" class="field-error">
+            @if (form.controls.password.hasError('required')) {
+              {{ i18n.translate('validation.required') }}
+            } @else if (form.controls.password.hasError('minlength')) {
+              {{ i18n.translate('validation.minLength', { value: 10 }) }}
+            } @else {
+              {{ i18n.translate('validation.maxLength', { value: 1024 }) }}
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="create-account-confirm-password">
+          {{ i18n.translate('auth.password.confirm') }}
+        </label>
+        <input
+          id="create-account-confirm-password"
+          type="password"
+          autocomplete="new-password"
+          maxlength="1024"
+          formControlName="confirmPassword"
+          [placeholder]="i18n.translate('auth.password.confirmPlaceholder')"
+          [attr.aria-invalid]="
+            shouldShowError(form.controls.confirmPassword) || shouldShowPasswordMismatch()
+          "
+          [attr.aria-describedby]="
+            shouldShowError(form.controls.confirmPassword) || shouldShowPasswordMismatch()
+              ? 'create-account-confirm-password-error'
+              : null
+          "
+        />
+        @if (shouldShowError(form.controls.confirmPassword)) {
+          <p id="create-account-confirm-password-error" class="field-error">
+            {{ i18n.translate('validation.required') }}
+          </p>
+        } @else if (shouldShowPasswordMismatch()) {
+          <p id="create-account-confirm-password-error" class="field-error">
+            {{ i18n.translate('auth.error.passwordMismatch') }}
+          </p>
+        }
+      </div>
+
+      <button
+        class="button button--primary button--large button--block auth-submit"
+        type="submit"
+        [disabled]="isSubmitting()"
+      >
+        @if (isSubmitting()) {
+          {{ i18n.translate('common.loading') }}
+        } @else {
+          {{ i18n.translate('auth.signUp.action') }}
+          <span aria-hidden="true">→</span>
+        }
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      {{ i18n.translate('auth.signUp.hasAccount') }}
+      <a routerLink="/auth/sign-in">{{ i18n.translate('auth.signUp.signIn') }}</a>
+    </p>
+  </section>
+</main>

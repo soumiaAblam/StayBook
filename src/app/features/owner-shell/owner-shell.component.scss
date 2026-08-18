@@ -1,0 +1,130 @@
+.owner-navigation {
+  overflow-x: auto;
+}
+
+.owner-brand {
+  display: block;
+  flex: 0 0 auto;
+  width: 9rem;
+  padding: 0.2rem;
+  border-radius: var(--radius-sm);
+}
+
+.owner-brand img {
+  width: 100%;
+  height: auto;
+}
+
+.owner-nav-links,
+.owner-nav-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.owner-nav-links {
+  margin-inline: auto;
+}
+
+.owner-nav-links a,
+.sign-out-button {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-size);
+  padding: 0.6rem 0.8rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  background: transparent;
+  font-size: var(--text-sm);
+  font-weight: 750;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.owner-nav-links a:hover,
+.owner-nav-links a.active,
+.sign-out-button:hover {
+  color: var(--color-blue-strong);
+  background: var(--color-blue-soft);
+}
+
+.locale-field select {
+  min-height: var(--target-size);
+  padding: 0.5rem 1.8rem 0.5rem 0.65rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+@media (max-width: 43rem) {
+  .owner-navigation {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .owner-brand {
+    width: 8.5rem;
+  }
+
+  .owner-nav-links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    margin: 0;
+  }
+
+  .owner-nav-links a {
+    flex: 1;
+  }
+
+  .owner-nav-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .sign-out-button span,
+  .locale-field {
+    display: none;
+  }
+}
+
+@media (min-width: 80rem) {
+  .owner-navigation {
+    overflow: visible;
+  }
+
+  .owner-brand {
+    width: min(100%, 12rem);
+    margin: 0 auto var(--space-5);
+  }
+
+  .owner-nav-links,
+  .owner-nav-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .owner-nav-links {
+    margin: 0;
+  }
+
+  .owner-nav-links a,
+  .sign-out-button {
+    justify-content: flex-start;
+  }
+
+  .owner-nav-actions {
+    margin-top: auto;
+  }
+
+  .locale-field select {
+    width: 100%;
+  }
+}

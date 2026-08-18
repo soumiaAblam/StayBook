@@ -1,0 +1,15 @@
+<section class="owner-workspace new-property-state" aria-live="polite">
+  @if (failed()) {
+    <div class="alert alert--error" role="alert">
+      <app-icon name="alert-circle" />
+      <span>{{ i18n.translate('error.generic') }}</span>
+    </div>
+    <a class="button button--secondary" routerLink="/owner/properties">
+      <app-icon name="arrow-left" />
+      <span>{{ i18n.translate('editor.back') }}</span>
+    </a>
+  } @else {
+    <app-icon class="new-property-icon" name="plus" />
+    <p>{{ i18n.translate('properties.add') }}</p>
+  }
+</section>
