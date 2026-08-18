@@ -1,82 +1,113 @@
 # StayBook
 
-StayBook is a local-first Angular web application for holiday-rental owners. It helps an owner organise the practical information guests need before arrival and during a stay, including check-in, home access, Wi-Fi, house rules, local recommendations, transport, extras, support and check-out.
+StayBook is an Angular web application for holiday-rental owners to prepare and share clear guest guidance. It centralizes check-in details, home access, house information, recommendations, and checkout instructions in one guided workflow.
 
-This repository is currently being built as a professional technical-demo application. It is frontend-only and intentionally has no backend, remote database, booking flow, payment processing, email delivery or production deployment.
+## What you can do
 
-## Local-only scope
-
-StayBook runs in one browser and stores demo data on that device. It does not publish a guide to the Internet or synchronise information across devices. Guest preview links are only reliable in the browser tab and session where the related property exists.
-
-The local account flow is a product demonstration, not secure authentication or hosting. Browser storage, route guards, password derivation and an opaque property identifier do not create an authorisation boundary. Do not enter real door codes, Wi-Fi passwords, personal contact details or production data.
-
-If a local password is lost, there is no password-recovery flow. Clear the site's browser data to remove the local accounts and start again.
+- Sign in as an owner and manage multiple properties.
+- Complete a structured guide editor with validation and progress tracking.
+- Review guide completeness before sharing.
+- Open the guest-facing experience for each property, including Home, details, and navigation cards.
 
 ## Prerequisites
 
-- Node.js `24.18.1` (the expected version is also recorded in `.nvmrc`)
+- Node.js `24.18.1` (see `.nvmrc`)
 - npm `11.x`
-- A current Chromium, Firefox or WebKit-based browser
+- A modern browser (Chromium, Firefox, or WebKit based)
 
-## Get started
+## Quick start
 
-Install the exact dependency versions from the lockfile:
+Install dependencies:
 
 ```bash
 npm ci
 ```
 
-Start the development server:
+Start the app:
 
 ```bash
 npm start
 ```
 
-Then open `http://localhost:4200/`.
+Open:
 
-Run the complete local quality gate:
+`http://localhost:4200/`
+
+## Quality checks
+
+Run the full project quality gate:
 
 ```bash
 npm run check
 ```
 
-The quality gate checks formatting, linting, unit tests, the production build and end-to-end tests. Individual scripts remain available in `package.json` when a narrower check is useful.
+This runs formatting, linting, unit tests, build, and end-to-end tests.
 
-## Planned architecture
+Useful focused commands:
 
-The application uses Angular standalone components, strict TypeScript, lazy feature routes, typed Reactive Forms, signals and focused services/facades. SCSS provides design tokens and component styling. Vitest covers unit and component behaviour; Playwright and axe cover critical journeys, responsive behaviour and accessibility.
+- `npm run test` - unit and component tests
+- `npm run build` - production build
+- `npm run e2e` - Playwright end-to-end suite
 
-The source is organised around responsibilities rather than a global folder for every file type:
+## Fixture account
 
-- `core`: application shell, routing, local account flow, localisation and storage adapters
-- `domain`: framework-light models, validation, completion rules and Guest projections
-- `features`: language, account access, properties, guide editor, review and Guest guide journeys
-- `shared`: reusable UI, icons, validators and utilities
-
-Persisted payloads are namespaced, schema-versioned and validated when read. Guest screens receive an explicit projection of Owner data instead of the complete editing model.
-
-## Browser storage model
-
-- `localStorage`: local accounts and the selected interface language. Passwords must never be stored as plaintext; account verification uses a salted password-derived value.
-- `sessionStorage`: the authenticated session, Owner workspace, properties, images and guide content. This data ends with the browser-tab session.
-
-This separation supports the approved local demo behaviour; it must not be interpreted as a security guarantee. A production service would require a backend, server-side identity, access control, protected persistence and a separate security review.
-
-## Language policy
-
-The fixed interface is designed for Spanish, English, French and German (`ES`, `EN`, `FR`, `DE`). Content entered by an Owner is stored once and displayed unchanged; StayBook does not automatically translate it.
-
-All source code, file names, routes, symbols, tests, technical documentation and commit messages are written in English. Translation catalogues necessarily contain the user-facing copy for all four supported languages.
-
-## Demo fixture
-
-Use this public, fictional account to review a complete dashboard without entering setup data:
+Use this fictional account to explore a preloaded workspace:
 
 - Email: `demo@demo.com`
 - Password: `demo123`
 
-The account seeds exactly three fictional properties into the current browser-tab session. It contains no real access codes, Wi-Fi credentials, addresses or personal contacts. Changes persist only for that tab session and are not overwritten while it remains open. Accounts created through the interface start with an empty property dashboard.
+It includes three sample properties with different completion states.
 
-## Production status
+If you create a new account from the UI, the dashboard starts empty so you can test the full creation flow from scratch.
 
-StayBook is not approved for production use, public hosting or real accommodation data. The current objective is a robust, accessible and reproducible local demonstration.
+## Troubleshooting
+
+### Wrong Node or npm version
+
+If installation or scripts fail unexpectedly, confirm your versions:
+
+```bash
+node -v
+npm -v
+```
+
+Then switch to Node `24.18.1` and reinstall with `npm ci`.
+
+### Port 4200 already in use
+
+Stop the process using that port, or run Angular on another one:
+
+```bash
+npm start -- --port 4300
+```
+
+### Dependency mismatch after branch changes
+
+Clean install again:
+
+```bash
+npm ci
+```
+
+### Sign-in or data behaves unexpectedly after many test runs
+
+Clear browser site data for the app origin and sign in again.
+
+## Architecture snapshot
+
+StayBook uses:
+
+- Angular standalone APIs with lazy feature routes
+- Strict TypeScript
+- Typed Reactive Forms and signals
+- Focused services/facades for application flows
+- Vitest for unit/component coverage
+- Playwright (+ axe) for end-to-end and accessibility checks
+
+## Project structure
+
+- `src/app/core` - app shell, routing, auth, i18n, storage, workspace orchestration
+- `src/app/domain` - models and mapping logic
+- `src/app/features` - owner and guest feature flows
+- `src/app/shared` - reusable UI components and cross-feature utilities
+- `e2e` - Playwright scenarios
