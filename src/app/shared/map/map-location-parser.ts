@@ -29,7 +29,10 @@ type CoordinatePairResult =
   | { readonly status: 'out-of-range' }
   | { readonly status: 'valid'; readonly coordinates: MapCoordinates };
 
-type CapturedCoordinatePairResult = Exclude<CoordinatePairResult, { readonly status: 'not-coordinates' }>;
+type CapturedCoordinatePairResult = Exclude<
+  CoordinatePairResult,
+  { readonly status: 'not-coordinates' }
+>;
 
 type UrlCoordinateResult =
   | { readonly status: 'absent' }

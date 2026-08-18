@@ -23,11 +23,13 @@ import {
   type NearbyServiceCategory,
   type Parking,
   type Property,
+  type PropertyCoverImage,
   type PropertyType,
   type RulePolicy,
   type Time24,
   type TransportType,
 } from '../../../domain/property';
+import { PropertyImageError, PropertyImageService } from '../../../shared/image';
 import { UiIconComponent } from '../../../shared/ui';
 
 export type GuideEditorSection =
@@ -137,6 +139,7 @@ export class GuideEditorPage {
   private readonly router = inject(Router);
   private readonly workspaceRepository = inject(AccountWorkspaceRepository);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly propertyImages = inject(PropertyImageService);
 
   readonly i18n = inject(I18nService);
   readonly sectionDefinitions = SECTION_DEFINITIONS;
@@ -152,6 +155,9 @@ export class GuideEditorPage {
   readonly saved = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly loading = signal(true);
+  readonly coverImage = signal<PropertyCoverImage | null>(null);
+  readonly imageProcessing = signal(false);
+  readonly imageError = signal(false);
   readonly currentStep = computed(
     () => SECTION_DEFINITIONS.findIndex((section) => section.id === this.currentSection()) + 1,
   );
@@ -170,6 +176,10 @@ export class GuideEditorPage {
     welcomeMessage: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(4_000)],
+    }),
+    coverAltText: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.maxLength(240),
     }),
   });
 
@@ -394,6 +404,41 @@ export class GuideEditorPage {
     );
   }
 
+  async selectCoverImage(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.item(0);
+    if (!file || this.imageProcessing()) {
+      return;
+    }
+
+    this.imageProcessing.set(true);
+    this.imageError.set(false);
+
+    try {
+      const altText =
+        this.overviewForm.controls.coverAltText.value.trim() ||
+        this.overviewForm.controls.name.value.trim();
+      const image = await this.propertyImages.process(file, altText);
+      this.coverImage.set(image);
+      this.overviewForm.controls.coverAltText.setValue(image.altText);
+    } catch (error) {
+      if (error instanceof PropertyImageError) {
+        this.imageError.set(true);
+      } else {
+        this.imageError.set(true);
+      }
+      input.value = '';
+    } finally {
+      this.imageProcessing.set(false);
+    }
+  }
+
+  removeCoverImage(): void {
+    this.coverImage.set(null);
+    this.overviewForm.controls.coverAltText.setValue('');
+    this.imageError.set(false);
+  }
+
   removeCheckoutItem(index: number): void {
     if (!this.checkoutItems.at(index).controls.isDefault.value) {
       this.checkoutItems.removeAt(index);
@@ -475,7 +520,14 @@ export class GuideEditorPage {
   }
 
   private populateForms(property: Property): void {
-    this.overviewForm.reset(property.overview);
+    this.overviewForm.reset({
+      name: property.overview.name,
+      cityOrArea: property.overview.cityOrArea,
+      propertyType: property.overview.propertyType,
+      welcomeMessage: property.overview.welcomeMessage,
+      coverAltText: property.overview.coverImage?.altText ?? '',
+    });
+    this.coverImage.set(property.overview.coverImage);
 
     const [checkInHour, checkInMinute] = splitTime(property.arrivalAccess.checkInTime);
     const parking = property.arrivalAccess.parking;
@@ -732,7 +784,15 @@ export class GuideEditorPage {
         const value = this.overviewForm.getRawValue();
         updated = {
           ...property,
-          overview: { ...property.overview, ...value },
+          overview: {
+            name: value.name,
+            cityOrArea: value.cityOrArea,
+            propertyType: value.propertyType,
+            welcomeMessage: value.welcomeMessage,
+            coverImage: this.coverImage()
+              ? { ...this.coverImage()!, altText: value.coverAltText.trim() }
+              : null,
+          },
         };
         break;
       }
