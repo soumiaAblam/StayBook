@@ -131,6 +131,18 @@ describe('AccountWorkspaceRepository', () => {
     });
   });
 
+  it('ignores a corrupted guest preview snapshot instead of returning an invalid property shape', () => {
+    localStorage.setItem(
+      STORAGE_KEYS.guestPreview('property-1'),
+      JSON.stringify({ id: 'property-1', ownerAccountId: 'account-1', injected: true }),
+    );
+
+    expect(repository.findProperty('property-1')).toEqual({
+      ok: false,
+      error: { code: 'unavailable', key: STORAGE_KEYS.authSession },
+    });
+  });
+
   it('seeds exactly three fixture properties once per tab session', () => {
     authSessionRepository.start(FIXTURE_ACCOUNT_ID);
 
