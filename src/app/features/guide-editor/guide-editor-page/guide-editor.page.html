@@ -1,0 +1,978 @@
+@if (loading()) {
+  <section class="owner-workspace editor-state" aria-live="polite">
+    <p>{{ i18n.translate('common.loading') }}</p>
+  </section>
+} @else if (property(); as currentProperty) {
+  <section class="owner-workspace editor-page">
+    <header class="editor-header">
+      <div class="editor-heading">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a routerLink="/owner/properties">{{ i18n.translate('nav.properties') }}</a>
+          <span aria-hidden="true">/</span>
+          <span>{{ currentProperty.overview.name || i18n.translate('properties.add') }}</span>
+        </nav>
+        <h1>{{ i18n.translate('nav.guideEditor') }}</h1>
+      </div>
+      <a
+        class="button button--secondary"
+        [routerLink]="['/owner/properties', currentProperty.id, 'review']"
+      >
+        <app-icon name="eye" />
+        {{ i18n.translate('properties.preview') }}
+      </a>
+    </header>
+
+    <div class="editor-progress" aria-label="Guide progress">
+      <div>
+        <strong>{{ currentStep() }} / 7</strong>
+        <span>{{ i18n.translate('nav.guideEditor') }}</span>
+      </div>
+      <div
+        class="progress"
+        role="progressbar"
+        aria-valuemin="1"
+        aria-valuemax="7"
+        [attr.aria-valuenow]="currentStep()"
+      >
+        <span class="progress__value" [style.--progress.%]="progressPercentage()"></span>
+      </div>
+    </div>
+
+    <div class="editor-layout">
+      <nav class="step-navigation" aria-label="Guide setup steps">
+        @for (definition of sectionDefinitions; track definition.id) {
+          <button
+            type="button"
+            class="step-button"
+            [class.is-active]="sectionIsCurrent(definition.id)"
+            [attr.aria-current]="sectionIsCurrent(definition.id) ? 'step' : null"
+            (click)="navigateToSection(definition.id)"
+          >
+            <span>{{ definition.number }}</span>
+            <strong>{{ i18n.translate(definition.labelKey) }}</strong>
+          </button>
+        }
+      </nav>
+
+      <div class="step-workspace">
+        <p class="step-label">Step {{ currentStep() }} of 7</p>
+
+        @switch (currentSection()) {
+          @case ('overview') {
+            <h2>{{ i18n.translate('editor.basics') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="overviewForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <div class="form-grid form-grid--two">
+                <label class="field">
+                  <span>{{ i18n.translate('editor.propertyName') }}</span>
+                  <input
+                    id="property-name"
+                    formControlName="name"
+                    [placeholder]="i18n.translate('editor.propertyName.placeholder')"
+                    [attr.aria-invalid]="
+                      overviewForm.controls.name.invalid && overviewForm.controls.name.touched
+                    "
+                  />
+                  @if (overviewForm.controls.name.invalid && overviewForm.controls.name.touched) {
+                    <small class="field-error">{{ i18n.translate('validation.required') }}</small>
+                  }
+                </label>
+
+                <label class="field">
+                  <span>{{ i18n.translate('editor.city') }}</span>
+                  <input
+                    id="property-city"
+                    formControlName="cityOrArea"
+                    [placeholder]="i18n.translate('editor.city.placeholder')"
+                    [attr.aria-invalid]="
+                      overviewForm.controls.cityOrArea.invalid &&
+                      overviewForm.controls.cityOrArea.touched
+                    "
+                  />
+                  @if (
+                    overviewForm.controls.cityOrArea.invalid &&
+                    overviewForm.controls.cityOrArea.touched
+                  ) {
+                    <small class="field-error">{{ i18n.translate('validation.required') }}</small>
+                  }
+                </label>
+
+                <label class="field">
+                  <span>Property type</span>
+                  <select formControlName="propertyType">
+                    <option value="apartment">Apartment</option>
+                    <option value="house">House</option>
+                    <option value="room">Room</option>
+                  </select>
+                </label>
+
+                <label class="field field--wide">
+                  <span>Welcome message</span>
+                  <textarea
+                    formControlName="welcomeMessage"
+                    placeholder="Write a short, welcoming message for guests."
+                    [attr.aria-invalid]="
+                      overviewForm.controls.welcomeMessage.invalid &&
+                      overviewForm.controls.welcomeMessage.touched
+                    "
+                  ></textarea>
+                  @if (
+                    overviewForm.controls.welcomeMessage.invalid &&
+                    overviewForm.controls.welcomeMessage.touched
+                  ) {
+                    <small class="field-error">{{ i18n.translate('validation.required') }}</small>
+                  }
+                </label>
+              </div>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('arrival-access') {
+            <h2>{{ i18n.translate('editor.arrival') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="arrivalForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.checkInTime') }}</legend>
+                <div class="time-grid">
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.hour') }}</span>
+                    <select formControlName="checkInHour">
+                      <option value="">--</option>
+                      @for (hour of hours; track hour) {
+                        <option [value]="hour">{{ hour }}</option>
+                      }
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.minute') }}</span>
+                    <select formControlName="checkInMinute">
+                      <option value="">--</option>
+                      @for (minute of minutes; track minute) {
+                        <option [value]="minute">{{ minute }}</option>
+                      }
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
+
+              <label class="field">
+                <span>{{ i18n.translate('editor.arrivalNote') }}</span>
+                <textarea
+                  formControlName="checkInInstructions"
+                  [placeholder]="i18n.translate('editor.arrivalNote.placeholder')"
+                ></textarea>
+              </label>
+
+              <fieldset class="form-card">
+                <legend>Getting here</legend>
+                <div class="form-grid form-grid--two">
+                  <label class="field field--wide">
+                    <span>{{ i18n.translate('editor.homeAddress') }}</span>
+                    <textarea
+                      formControlName="writtenAddress"
+                      [placeholder]="i18n.translate('editor.homeAddress.placeholder')"
+                      [attr.aria-invalid]="
+                        arrivalForm.controls.writtenAddress.invalid &&
+                        arrivalForm.controls.writtenAddress.touched
+                      "
+                    ></textarea>
+                  </label>
+                  <label class="field field--wide">
+                    <span>{{ i18n.translate('editor.mapsLocation') }}</span>
+                    <input
+                      formControlName="mapReference"
+                      [placeholder]="i18n.translate('editor.mapsLocation.placeholder')"
+                      inputmode="url"
+                    />
+                  </label>
+                  <label class="field field--wide">
+                    <span>Directions</span>
+                    <textarea
+                      formControlName="directions"
+                      placeholder="Explain the easiest route or useful landmarks."
+                    ></textarea>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-card">
+                <legend>Home access</legend>
+                <div class="form-grid form-grid--two">
+                  <label class="field">
+                    <span>Access method</span>
+                    <select formControlName="accessMethod">
+                      <option value="door">Door</option>
+                      <option value="lockbox">Lockbox</option>
+                      <option value="meet-host">Meet the host</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </label>
+                  <label class="field field--wide">
+                    <span>{{ i18n.translate('editor.accessInstructions') }}</span>
+                    <textarea
+                      formControlName="accessInstructions"
+                      [placeholder]="i18n.translate('editor.accessInstructions.placeholder')"
+                      [attr.aria-invalid]="
+                        arrivalForm.controls.accessInstructions.invalid &&
+                        arrivalForm.controls.accessInstructions.touched
+                      "
+                    ></textarea>
+                  </label>
+                  <label class="field">
+                    <span
+                      >{{ i18n.translate('editor.doorCode') }} ·
+                      {{ i18n.translate('common.optional') }}</span
+                    >
+                    <input
+                      formControlName="doorCode"
+                      [placeholder]="i18n.translate('editor.doorCode.placeholder')"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label class="field">
+                    <span
+                      >{{ i18n.translate('editor.lockboxCode') }} ·
+                      {{ i18n.translate('common.optional') }}</span
+                    >
+                    <input
+                      formControlName="lockboxCode"
+                      [placeholder]="i18n.translate('editor.lockboxCode.placeholder')"
+                      autocomplete="off"
+                    />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.parking') }}</legend>
+                <label class="field">
+                  <span>Parking option</span>
+                  <select formControlName="parkingKind">
+                    <option value="none">{{ i18n.translate('editor.parking.none') }}</option>
+                    <option value="on-site">{{ i18n.translate('editor.parking.onSite') }}</option>
+                    <option value="nearby-free">Nearby free parking</option>
+                    <option value="nearby-paid">Nearby paid parking</option>
+                    <option value="ask-host">{{ i18n.translate('editor.parking.askHost') }}</option>
+                  </select>
+                </label>
+                @if (arrivalForm.controls.parkingKind.value !== 'none') {
+                  <div class="form-grid form-grid--two conditional-panel">
+                    <label class="field">
+                      <span>{{ i18n.translate('editor.parking.address') }}</span>
+                      <textarea
+                        formControlName="parkingAddress"
+                        [placeholder]="i18n.translate('editor.parking.addressPlaceholder')"
+                        [attr.aria-invalid]="
+                          arrivalForm.controls.parkingAddress.invalid &&
+                          arrivalForm.controls.parkingAddress.touched
+                        "
+                      ></textarea>
+                      @if (
+                        arrivalForm.controls.parkingAddress.invalid &&
+                        arrivalForm.controls.parkingAddress.touched
+                      ) {
+                        <small class="field-error">{{
+                          i18n.translate('validation.parkingAddress')
+                        }}</small>
+                      }
+                    </label>
+                    <label class="field">
+                      <span>Parking instructions</span>
+                      <textarea
+                        formControlName="parkingInstructions"
+                        placeholder="Explain how guests can find and use the parking option."
+                      ></textarea>
+                    </label>
+                  </div>
+                }
+              </fieldset>
+
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.luggage') }}</legend>
+                <div class="choice-list choice-list--columns">
+                  <label class="choice-card">
+                    <input type="radio" formControlName="luggageKind" value="internal" />
+                    <span class="choice-card__copy"
+                      ><strong>{{ i18n.translate('editor.luggage.internal') }}</strong></span
+                    >
+                  </label>
+                  <label class="choice-card">
+                    <input type="radio" formControlName="luggageKind" value="external-paid" />
+                    <span class="choice-card__copy"
+                      ><strong>{{ i18n.translate('editor.luggage.external') }}</strong></span
+                    >
+                  </label>
+                  <label class="choice-card">
+                    <input type="radio" formControlName="luggageKind" value="none" />
+                    <span class="choice-card__copy"
+                      ><strong>{{ i18n.translate('editor.luggage.none') }}</strong></span
+                    >
+                  </label>
+                </div>
+                @if (arrivalForm.controls.luggageKind.value === 'internal') {
+                  <label class="field conditional-panel">
+                    <span>Storage instructions</span>
+                    <textarea
+                      formControlName="luggageInstructions"
+                      placeholder="Explain where and when guests can leave their luggage."
+                    ></textarea>
+                  </label>
+                } @else if (arrivalForm.controls.luggageKind.value === 'external-paid') {
+                  <div class="form-grid form-grid--two conditional-panel">
+                    <label class="field">
+                      <span>Locker service name</span>
+                      <input
+                        formControlName="luggageProviderName"
+                        placeholder="Enter the nearby locker service name."
+                      />
+                    </label>
+                    <label class="field">
+                      <span>Locker address</span>
+                      <textarea
+                        formControlName="luggageAddress"
+                        placeholder="Enter the locker service address."
+                      ></textarea>
+                    </label>
+                    <label class="field field--wide">
+                      <span>Locker instructions</span>
+                      <textarea
+                        formControlName="luggageInstructions"
+                        placeholder="Explain booking, payment or opening-hour details."
+                      ></textarea>
+                    </label>
+                  </div>
+                }
+              </fieldset>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('home-essentials') {
+            <h2>{{ i18n.translate('editor.home') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="homeForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <fieldset class="form-card">
+                <legend>Internet</legend>
+                <label class="toggle-field">
+                  <input type="checkbox" formControlName="hasWifi" />
+                  <span>Wi-Fi is available</span>
+                </label>
+                @if (homeForm.controls.hasWifi.value) {
+                  <div class="form-grid form-grid--two conditional-panel">
+                    <label class="field">
+                      <span>{{ i18n.translate('editor.wifiNetwork') }}</span>
+                      <input
+                        formControlName="wifiNetwork"
+                        [placeholder]="i18n.translate('editor.wifiNetwork.placeholder')"
+                        autocomplete="off"
+                      />
+                    </label>
+                    <label class="field">
+                      <span>{{ i18n.translate('editor.wifiPassword') }}</span>
+                      <input
+                        formControlName="wifiPassword"
+                        [placeholder]="i18n.translate('editor.wifiPassword.placeholder')"
+                        autocomplete="off"
+                      />
+                    </label>
+                    <label class="field field--wide">
+                      <span>Internet instructions</span>
+                      <textarea
+                        formControlName="wifiInstructions"
+                        placeholder="Add any useful connection or router instructions."
+                      ></textarea>
+                    </label>
+                  </div>
+                }
+              </fieldset>
+
+              <fieldset class="form-card">
+                <legend>Home care</legend>
+                <div class="form-grid form-grid--two">
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.heating') }}</span>
+                    <textarea
+                      formControlName="heatingAndCooling"
+                      [placeholder]="i18n.translate('editor.heating.placeholder')"
+                    ></textarea>
+                  </label>
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.hotWater') }}</span>
+                    <textarea
+                      formControlName="hotWater"
+                      [placeholder]="i18n.translate('editor.hotWater.placeholder')"
+                    ></textarea>
+                  </label>
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.power') }}</span>
+                    <textarea
+                      formControlName="powerIssues"
+                      [placeholder]="i18n.translate('editor.power.placeholder')"
+                    ></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Waste and recycling</span>
+                    <textarea
+                      formControlName="waste"
+                      placeholder="Explain where guests should place waste and recycling."
+                    ></textarea>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-card">
+                <legend>Stay support</legend>
+                <div class="form-grid form-grid--two">
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.hostName') }}</span>
+                    <input
+                      formControlName="hostName"
+                      placeholder="Enter the host name guests should see."
+                      autocomplete="name"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.hostPhone') }}</span>
+                    <input
+                      formControlName="hostPhone"
+                      placeholder="Enter a guest support phone number."
+                      autocomplete="tel"
+                      inputmode="tel"
+                    />
+                  </label>
+                  <label class="field field--wide">
+                    <span>{{ i18n.translate('editor.hostEmail') }}</span>
+                    <input
+                      formControlName="hostEmail"
+                      placeholder="Enter a guest support email address."
+                      autocomplete="email"
+                      inputmode="email"
+                    />
+                    @if (
+                      homeForm.controls.hostEmail.invalid && homeForm.controls.hostEmail.touched
+                    ) {
+                      <small class="field-error">{{ i18n.translate('validation.email') }}</small>
+                    }
+                  </label>
+                </div>
+              </fieldset>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('house-rules') {
+            <h2>{{ i18n.translate('editor.rules') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="rulesForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.quietHours') }}</legend>
+                <label class="toggle-field">
+                  <input type="checkbox" formControlName="hasQuietHours" />
+                  <span>Quiet hours apply</span>
+                </label>
+                @if (rulesForm.controls.hasQuietHours.value) {
+                  <div class="quiet-hours conditional-panel">
+                    <div class="time-grid">
+                      <span class="time-title">{{ i18n.translate('editor.from') }}</span>
+                      <label class="field">
+                        <span>{{ i18n.translate('editor.hour') }}</span>
+                        <select formControlName="quietStartHour">
+                          <option value="">--</option>
+                          @for (hour of hours; track hour) {
+                            <option [value]="hour">{{ hour }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label class="field">
+                        <span>{{ i18n.translate('editor.minute') }}</span>
+                        <select formControlName="quietStartMinute">
+                          <option value="">--</option>
+                          @for (minute of minutes; track minute) {
+                            <option [value]="minute">{{ minute }}</option>
+                          }
+                        </select>
+                      </label>
+                    </div>
+                    <div class="time-grid">
+                      <span class="time-title">{{ i18n.translate('editor.to') }}</span>
+                      <label class="field">
+                        <span>{{ i18n.translate('editor.hour') }}</span>
+                        <select formControlName="quietEndHour">
+                          <option value="">--</option>
+                          @for (hour of hours; track hour) {
+                            <option [value]="hour">{{ hour }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label class="field">
+                        <span>{{ i18n.translate('editor.minute') }}</span>
+                        <select formControlName="quietEndMinute">
+                          <option value="">--</option>
+                          @for (minute of minutes; track minute) {
+                            <option [value]="minute">{{ minute }}</option>
+                          }
+                        </select>
+                      </label>
+                    </div>
+                    @if (rulesForm.controls.quietEndHour.hasError('identicalTime')) {
+                      <small class="field-error">Choose two different times.</small>
+                    }
+                  </div>
+                }
+              </fieldset>
+
+              <div class="form-grid form-grid--two">
+                @for (
+                  rule of [
+                    { control: 'smoking', label: i18n.translate('editor.smoking') },
+                    { control: 'events', label: i18n.translate('editor.events') },
+                    { control: 'pets', label: i18n.translate('editor.pets') },
+                    { control: 'babies', label: 'Babies' },
+                    { control: 'children', label: 'Children' },
+                    { control: 'visitors', label: i18n.translate('editor.visitors') },
+                  ];
+                  track rule.control
+                ) {
+                  <label class="field">
+                    <span>{{ rule.label }}</span>
+                    <select [formControlName]="rule.control">
+                      @for (policy of rulePolicies; track policy) {
+                        <option [value]="policy">{{ policyLabel(policy) }}</option>
+                      }
+                    </select>
+                  </label>
+                }
+              </div>
+              <label class="field">
+                <span>{{ i18n.translate('editor.helpfulNote') }}</span>
+                <textarea
+                  formControlName="additionalNote"
+                  [placeholder]="i18n.translate('editor.helpfulNote.placeholder')"
+                ></textarea>
+              </label>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('local-guide') {
+            <h2>{{ i18n.translate('editor.localGuide') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="localGuideForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <div class="section-toolbar">
+                <h3>{{ i18n.translate('editor.nearbyServices') }}</h3>
+                <button class="button button--secondary" type="button" (click)="addService()">
+                  <app-icon name="plus" />
+                  {{ i18n.translate('editor.addService') }}
+                </button>
+              </div>
+
+              <div class="service-list" formArrayName="services">
+                @for (
+                  service of services.controls;
+                  track service.controls.id.value;
+                  let index = $index
+                ) {
+                  <article
+                    class="service-card"
+                    [class.is-active]="activeServiceIndex() === index"
+                    [formGroupName]="index"
+                  >
+                    <button
+                      class="service-summary"
+                      type="button"
+                      [attr.aria-expanded]="activeServiceIndex() === index"
+                      (click)="selectService(index)"
+                    >
+                      <span class="service-number">{{
+                        (index + 1).toString().padStart(2, '0')
+                      }}</span>
+                      <span>
+                        <strong>{{ service.controls.title.value || 'New recommendation' }}</strong>
+                        <small>{{ categoryLabel(service.controls.category.value) }}</small>
+                      </span>
+                      <app-icon
+                        [name]="activeServiceIndex() === index ? 'chevron-down' : 'chevron-right'"
+                      />
+                    </button>
+
+                    @if (activeServiceIndex() === index) {
+                      <div class="service-editor">
+                        <div class="form-grid form-grid--two">
+                          <label class="field">
+                            <span>{{ i18n.translate('editor.recommendationTitle') }}</span>
+                            <input
+                              formControlName="title"
+                              [placeholder]="
+                                i18n.translate('editor.recommendationTitle.placeholder')
+                              "
+                            />
+                          </label>
+                          <label class="field">
+                            <span>{{ i18n.translate('editor.category') }}</span>
+                            <select formControlName="category">
+                              @for (category of serviceCategories; track category) {
+                                <option [value]="category">{{ categoryLabel(category) }}</option>
+                              }
+                            </select>
+                          </label>
+                          @if (service.controls.category.value === 'transport') {
+                            <label class="field">
+                              <span>{{ i18n.translate('editor.transportType') }}</span>
+                              <select formControlName="transportType">
+                                <option value="">Select transport type</option>
+                                <option value="taxi">
+                                  {{ i18n.translate('editor.transport.taxi') }}
+                                </option>
+                                <option value="public-transport">
+                                  {{ i18n.translate('editor.transport.public') }}
+                                </option>
+                              </select>
+                            </label>
+                          }
+                          <label class="field">
+                            <span>{{ i18n.translate('editor.distance') }}</span>
+                            <input
+                              formControlName="distanceFromProperty"
+                              [placeholder]="i18n.translate('editor.distance.placeholder')"
+                            />
+                          </label>
+                          <label class="field field--wide">
+                            <span>{{ i18n.translate('editor.usefulReason') }}</span>
+                            <textarea
+                              formControlName="whyUseful"
+                              [placeholder]="i18n.translate('editor.usefulReason.placeholder')"
+                            ></textarea>
+                          </label>
+                        </div>
+                        <button
+                          class="button button--danger"
+                          type="button"
+                          (click)="removeService(index)"
+                        >
+                          <app-icon name="trash" />
+                          {{ i18n.translate('common.delete') }}
+                        </button>
+                      </div>
+                    }
+                  </article>
+                } @empty {
+                  <div class="empty-services">
+                    <app-icon name="map-pin" />
+                    <p>No nearby services added yet.</p>
+                  </div>
+                }
+              </div>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('extras') {
+            <h2>{{ i18n.translate('editor.extras') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="extrasForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.breakfast') }}</legend>
+                <label class="field">
+                  <span>{{ i18n.translate('editor.breakfast') }}</span>
+                  <select formControlName="breakfastKind">
+                    <option value="unavailable">
+                      {{ i18n.translate('editor.breakfast.unavailable') }}
+                    </option>
+                    <option value="on-request">
+                      {{ i18n.translate('editor.breakfast.request') }}
+                    </option>
+                    <option value="scheduled">
+                      {{ i18n.translate('editor.breakfast.scheduled') }}
+                    </option>
+                  </select>
+                </label>
+                @if (extrasForm.controls.breakfastKind.value === 'scheduled') {
+                  <div class="quiet-hours conditional-panel">
+                    <div class="time-grid">
+                      <span class="time-title">{{ i18n.translate('editor.from') }}</span>
+                      <label class="field"
+                        ><span>{{ i18n.translate('editor.hour') }}</span
+                        ><select formControlName="breakfastStartHour">
+                          <option value="">--</option>
+                          @for (hour of hours; track hour) {
+                            <option [value]="hour">{{ hour }}</option>
+                          }
+                        </select></label
+                      >
+                      <label class="field"
+                        ><span>{{ i18n.translate('editor.minute') }}</span
+                        ><select formControlName="breakfastStartMinute">
+                          <option value="">--</option>
+                          @for (minute of minutes; track minute) {
+                            <option [value]="minute">{{ minute }}</option>
+                          }
+                        </select></label
+                      >
+                    </div>
+                    <div class="time-grid">
+                      <span class="time-title">{{ i18n.translate('editor.to') }}</span>
+                      <label class="field"
+                        ><span>{{ i18n.translate('editor.hour') }}</span
+                        ><select formControlName="breakfastEndHour">
+                          <option value="">--</option>
+                          @for (hour of hours; track hour) {
+                            <option [value]="hour">{{ hour }}</option>
+                          }
+                        </select></label
+                      >
+                      <label class="field"
+                        ><span>{{ i18n.translate('editor.minute') }}</span
+                        ><select formControlName="breakfastEndMinute">
+                          <option value="">--</option>
+                          @for (minute of minutes; track minute) {
+                            <option [value]="minute">{{ minute }}</option>
+                          }
+                        </select></label
+                      >
+                    </div>
+                    @if (extrasForm.controls.breakfastEndHour.hasError('invalidRange')) {
+                      <small class="field-error">Choose an end time after the start time.</small>
+                    }
+                  </div>
+                }
+                @if (extrasForm.controls.breakfastKind.value !== 'unavailable') {
+                  <label class="field conditional-panel">
+                    <span>Breakfast details</span>
+                    <textarea
+                      formControlName="breakfastInstructions"
+                      placeholder="Explain what is included and how guests request breakfast."
+                    ></textarea>
+                  </label>
+                }
+              </fieldset>
+
+              <div class="extra-editor-grid">
+                <fieldset class="form-card tone-blue">
+                  <legend>{{ i18n.translate('editor.lateCheckout') }}</legend>
+                  <label class="toggle-field"
+                    ><input type="checkbox" formControlName="lateCheckoutAvailable" /><span
+                      >Available</span
+                    ></label
+                  >
+                  @if (extrasForm.controls.lateCheckoutAvailable.value) {
+                    <label class="field conditional-panel"
+                      ><span>Instructions</span
+                      ><textarea
+                        formControlName="lateCheckoutInstructions"
+                        [placeholder]="i18n.translate('editor.lateCheckout.placeholder')"
+                      ></textarea>
+                    </label>
+                  }
+                </fieldset>
+                <fieldset class="form-card tone-green">
+                  <legend>{{ i18n.translate('editor.familyEquipment') }}</legend>
+                  <label class="toggle-field"
+                    ><input type="checkbox" formControlName="familyEquipmentAvailable" /><span
+                      >Available</span
+                    ></label
+                  >
+                  @if (extrasForm.controls.familyEquipmentAvailable.value) {
+                    <label class="field conditional-panel"
+                      ><span>Instructions</span
+                      ><textarea
+                        formControlName="familyEquipmentInstructions"
+                        [placeholder]="i18n.translate('editor.familyEquipment.placeholder')"
+                      ></textarea>
+                    </label>
+                  }
+                </fieldset>
+                <fieldset class="form-card tone-pink">
+                  <legend>{{ i18n.translate('editor.petStay') }}</legend>
+                  <label class="toggle-field"
+                    ><input type="checkbox" formControlName="petStayAvailable" /><span
+                      >Available</span
+                    ></label
+                  >
+                  @if (extrasForm.controls.petStayAvailable.value) {
+                    <label class="field conditional-panel"
+                      ><span>Instructions</span
+                      ><textarea
+                        formControlName="petStayInstructions"
+                        [placeholder]="i18n.translate('editor.petStay.placeholder')"
+                      ></textarea>
+                    </label>
+                  }
+                </fieldset>
+              </div>
+
+              <fieldset class="form-card special-requests-card">
+                <legend>Special requests</legend>
+                <label class="field">
+                  <span>How guests should contact the host</span>
+                  <textarea
+                    formControlName="specialRequests"
+                    placeholder="Explain how guests should contact the host about special requests."
+                  ></textarea>
+                </label>
+              </fieldset>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+
+          @case ('checkout') {
+            <h2>{{ i18n.translate('editor.checkout') }}</h2>
+            <form
+              class="form step-form"
+              [formGroup]="checkoutForm"
+              (ngSubmit)="saveAndContinue()"
+              novalidate
+            >
+              <fieldset class="form-card">
+                <legend>{{ i18n.translate('editor.checkOutTime') }}</legend>
+                <div class="time-grid">
+                  <label class="field"
+                    ><span>{{ i18n.translate('editor.hour') }}</span
+                    ><select formControlName="checkoutHour">
+                      <option value="">--</option>
+                      @for (hour of hours; track hour) {
+                        <option [value]="hour">{{ hour }}</option>
+                      }
+                    </select></label
+                  >
+                  <label class="field"
+                    ><span>{{ i18n.translate('editor.minute') }}</span
+                    ><select formControlName="checkoutMinute">
+                      <option value="">--</option>
+                      @for (minute of minutes; track minute) {
+                        <option [value]="minute">{{ minute }}</option>
+                      }
+                    </select></label
+                  >
+                </div>
+              </fieldset>
+
+              <div class="form-grid form-grid--two">
+                <label class="field">
+                  <span>Key return</span>
+                  <textarea
+                    formControlName="keyReturn"
+                    placeholder="Explain where guests should leave or return the keys."
+                  ></textarea>
+                </label>
+                <label class="field">
+                  <span>Rubbish</span>
+                  <textarea
+                    formControlName="rubbish"
+                    placeholder="Explain where guests should leave rubbish and recycling."
+                  ></textarea>
+                </label>
+                <label class="field field--wide">
+                  <span>{{ i18n.translate('editor.departureNote') }}</span>
+                  <textarea
+                    formControlName="departureNote"
+                    [placeholder]="i18n.translate('editor.departureNote.placeholder')"
+                  ></textarea>
+                </label>
+              </div>
+
+              <fieldset class="form-card" formArrayName="checklist">
+                <legend>{{ i18n.translate('editor.checkoutChecklist') }}</legend>
+                <div class="section-toolbar section-toolbar--end">
+                  <button
+                    class="button button--secondary"
+                    type="button"
+                    (click)="addCheckoutItem()"
+                  >
+                    <app-icon name="plus" />
+                    {{ i18n.translate('editor.addCheckoutItem') }}
+                  </button>
+                </div>
+                <div class="checkout-items">
+                  @for (
+                    item of checkoutItems.controls;
+                    track item.controls.id.value;
+                    let index = $index
+                  ) {
+                    <div class="checkout-item" [formGroupName]="index">
+                      <app-icon name="check" />
+                      <label class="field">
+                        <span class="sr-only">Check-out item {{ index + 1 }}</span>
+                        <input
+                          formControlName="label"
+                          [readonly]="item.controls.isDefault.value"
+                          [placeholder]="i18n.translate('editor.checkoutItem.placeholder')"
+                        />
+                      </label>
+                      @if (!item.controls.isDefault.value) {
+                        <button
+                          class="icon-button"
+                          type="button"
+                          aria-label="Delete check-out item"
+                          (click)="removeCheckoutItem(index)"
+                        >
+                          <app-icon name="trash" />
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </fieldset>
+              <ng-container *ngTemplateOutlet="formActions" />
+            </form>
+          }
+        }
+
+        @if (errorMessage()) {
+          <div class="alert alert--error" role="alert">{{ errorMessage() }}</div>
+        } @else if (saved()) {
+          <div class="alert alert--success" role="status">{{ i18n.translate('status.saved') }}</div>
+        }
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="owner-workspace editor-state">
+    <app-icon name="alert-circle" />
+    <h1>{{ errorMessage() || i18n.translate('guest.unavailable.title') }}</h1>
+    <a class="button button--primary" routerLink="/owner/properties">{{
+      i18n.translate('nav.properties')
+    }}</a>
+  </section>
+}
+
+<ng-template #formActions>
+  <div class="form-actions">
+    <button class="button button--secondary" type="button" (click)="goBack()">
+      <app-icon name="arrow-left" />
+      {{ i18n.translate('editor.back') }}
+    </button>
+    <button class="button button--primary" type="submit">
+      {{
+        currentSection() === 'checkout'
+          ? i18n.translate('editor.review')
+          : i18n.translate('editor.next')
+      }}
+      <app-icon name="arrow-right" />
+    </button>
+  </div>
+</ng-template>
