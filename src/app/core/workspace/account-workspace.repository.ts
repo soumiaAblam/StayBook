@@ -15,7 +15,7 @@ import {
 } from '../storage';
 import { createEmptyAccountWorkspace, type AccountWorkspace } from './account-workspace.model';
 import { createFixtureWorkspace, FIXTURE_ACCOUNT_ID } from './fixture-workspace.factory';
-import { isAccountWorkspace, isOwnerProfile, WORKSPACE_LIMITS } from './workspace.decoder';
+import { isAccountWorkspace, isOwnerProfile, isProperty, WORKSPACE_LIMITS } from './workspace.decoder';
 
 const FIXTURE_STATE_SCHEMA_VERSION = 1 as const;
 const FIXTURE_STATE_MAXIMUM_BYTES = 8 * 1024;
@@ -350,11 +350,11 @@ export class AccountWorkspaceRepository {
     }
 
     try {
-      const value = JSON.parse(snapshot) as Partial<Property>;
-      if (!value || value.id !== propertyId || !value.ownerAccountId) {
+      const value = JSON.parse(snapshot);
+      if (!isProperty(value) || value.id !== propertyId) {
         return storageSuccess(null);
       }
-      return storageSuccess(value as Property);
+      return storageSuccess(value);
     } catch {
       return storageSuccess(null);
     }
