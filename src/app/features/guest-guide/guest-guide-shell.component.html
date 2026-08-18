@@ -1,0 +1,32 @@
+<div class="guest-guide">
+  <a class="skip-link" href="#guest-main">{{ i18n.translate('common.continue') }}</a>
+
+  <header class="guest-header">
+    @if (isHome()) {
+      <span class="guest-header__side" aria-hidden="true"></span>
+    } @else {
+      <a
+        class="guest-header__back"
+        [routerLink]="['/guide', propertyId]"
+        [attr.aria-label]="i18n.translate('guest.backToGuide')"
+      >
+        <app-icon name="arrow-left" />
+      </a>
+    }
+
+    <a class="guest-header__brand" [routerLink]="['/guide', propertyId]">
+      <img src="/assets/brand/staybook-logo-slogan.svg" alt="StayBook" />
+    </a>
+
+    <label class="guest-language">
+      <span class="sr-only">{{ i18n.translate('language.change') }}</span>
+      <select [value]="i18n.locale()" (change)="changeLocale($event)">
+        @for (option of localeOptions; track option.locale) {
+          <option [value]="option.locale">{{ option.flag }} {{ option.nativeName }}</option>
+        }
+      </select>
+    </label>
+  </header>
+
+  <router-outlet />
+</div>

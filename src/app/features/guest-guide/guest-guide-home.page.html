@@ -1,0 +1,92 @@
+<main id="guest-main" class="guest-main guest-home">
+  @if (facade.summary(); as guide) {
+    <section class="guest-hero" aria-labelledby="guest-property-name">
+      @if (guide.coverImageDataUrl) {
+        <img class="guest-hero__image" [src]="guide.coverImageDataUrl" [alt]="guide.propertyName" />
+      } @else {
+        <div class="guest-hero__fallback" aria-hidden="true">
+          <app-icon name="home" />
+        </div>
+      }
+      <div class="guest-hero__overlay">
+        <p>{{ copy.text('yourStayGuide') }}</p>
+        <h1 id="guest-property-name">
+          {{ i18n.translate('guest.welcome', { property: guide.propertyName }) }}
+        </h1>
+        @if (guide.cityOrArea) {
+          <span>{{ guide.cityOrArea }}</span>
+        }
+      </div>
+    </section>
+
+    @if (guide.welcomeMessage) {
+      <p class="guest-welcome-message">{{ guide.welcomeMessage }}</p>
+    }
+
+    @if (formatDate(guide.lastReviewedAt); as reviewedDate) {
+      <p class="guest-reviewed">
+        <app-icon name="check" />
+        {{ i18n.translate('guest.lastReviewed', { date: reviewedDate }) }}
+      </p>
+    }
+
+    <section class="guest-section" aria-labelledby="before-arrival-title">
+      <h2 id="before-arrival-title">{{ i18n.translate('guest.beforeArrival') }}</h2>
+      <div class="guest-card-grid">
+        @for (card of beforeArrivalCards; track card.path) {
+          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+            <strong>{{ i18n.translate(card.label) }}</strong>
+            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="guest-section" aria-labelledby="essentials-title">
+      <h2 id="essentials-title">{{ i18n.translate('guest.essentials') }}</h2>
+      <div class="guest-card-grid">
+        @for (card of essentialCards; track card.label) {
+          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+            <strong>{{ i18n.translate(card.label) }}</strong>
+            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="guest-section" aria-labelledby="during-stay-title">
+      <h2 id="during-stay-title">{{ i18n.translate('guest.duringStay') }}</h2>
+      <div class="guest-card-grid">
+        @for (card of duringStayCards; track card.path) {
+          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+            <strong>{{ i18n.translate(card.label) }}</strong>
+            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="guest-section" aria-labelledby="explore-title">
+      <h2 id="explore-title">{{ i18n.translate('guest.explore') }}</h2>
+      <a class="guest-explore-card tone-purple" routerLink="local-guide">
+        <span class="guest-explore-card__icon"><app-icon name="map-pin" /></span>
+        <strong>{{ i18n.translate('guest.localGuide') }}</strong>
+        <app-icon class="guest-explore-card__arrow" name="arrow-right" />
+      </a>
+    </section>
+
+    <section class="guest-section" aria-labelledby="before-leave-title">
+      <h2 id="before-leave-title">{{ i18n.translate('guest.beforeLeave') }}</h2>
+      <a class="guest-category-card guest-category-card--wide tone-green" routerLink="checkout">
+        <span class="guest-category-card__icon"><app-icon name="checkout" /></span>
+        <strong>{{ i18n.translate('guest.checkout') }}</strong>
+        <app-icon class="guest-category-card__arrow" name="chevron-right" />
+      </a>
+    </section>
+  } @else {
+    <app-guest-unavailable />
+  }
+</main>

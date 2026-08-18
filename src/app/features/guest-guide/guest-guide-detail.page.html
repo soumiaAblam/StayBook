@@ -1,0 +1,428 @@
+<main id="guest-main" class="guest-main guest-detail">
+  @if (detail(); as info) {
+    <header class="guest-detail__heading tone-{{ presentation.tone }}">
+      <span class="guest-detail__icon"><app-icon [name]="presentation.icon" /></span>
+      <h1>{{ i18n.translate(presentation.titleKey) }}</h1>
+    </header>
+
+    @switch (info.kind) {
+      @case ('check-in') {
+        <div class="guest-detail-stack">
+          @if (info.checkInTime) {
+            <article class="guest-highlight tone-blue">
+              <span>{{ copy.text('checkInTime') }}</span
+              ><strong>{{ info.checkInTime }}</strong>
+            </article>
+          }
+          @if (info.instructions) {
+            <app-info-block [label]="copy.text('instructions')" [value]="info.instructions" />
+          }
+
+          @if (homeAccess(); as access) {
+            @if (access.kind === 'home-access') {
+              <section class="guest-subsection" aria-labelledby="home-access-title">
+                <h2 id="home-access-title">{{ i18n.translate('guest.homeAccess') }}</h2>
+                <app-info-block
+                  [label]="copy.text('accessMethod')"
+                  [value]="
+                    copy.text(
+                      access.method === 'meet-host'
+                        ? 'accessMethod.meetHost'
+                        : access.method === 'lockbox'
+                          ? 'accessMethod.lockbox'
+                          : access.method === 'door'
+                            ? 'accessMethod.door'
+                            : 'accessMethod.other'
+                    )
+                  "
+                />
+                @if (access.instructions) {
+                  <app-info-block
+                    [label]="copy.text('instructions')"
+                    [value]="access.instructions"
+                  />
+                }
+                @if (access.doorCode || access.lockboxCode) {
+                  <div class="guest-secret">
+                    <button
+                      class="button button--secondary button--block"
+                      type="button"
+                      (click)="toggleAccess()"
+                      [attr.aria-expanded]="accessRevealed()"
+                    >
+                      <app-icon [name]="accessRevealed() ? 'eye-off' : 'eye'" />
+                      {{ i18n.translate(accessRevealed() ? 'guest.hide' : 'guest.reveal') }}
+                    </button>
+                    @if (accessRevealed()) {
+                      <div class="guest-secret__values" aria-live="polite">
+                        @if (access.doorCode) {
+                          <app-info-block
+                            [label]="copy.text('doorCode')"
+                            [value]="access.doorCode"
+                          />
+                        }
+                        @if (access.lockboxCode) {
+                          <app-info-block
+                            [label]="copy.text('lockboxCode')"
+                            [value]="access.lockboxCode"
+                          />
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </section>
+            }
+          }
+        </div>
+      }
+
+      @case ('home-address') {
+        <div class="guest-detail-stack">
+          <app-info-block [label]="copy.text('address')" [value]="info.writtenAddress" />
+          @if (info.directions) {
+            <app-info-block [label]="copy.text('directions')" [value]="info.directions" />
+          }
+          @if (safeEmbedUrl(); as mapUrl) {
+            <iframe
+              class="guest-map"
+              [src]="mapUrl"
+              [title]="copy.text('mapPreview')"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            ></iframe>
+          }
+          @if (mapLocation(); as location) {
+            <a
+              class="button button--primary button--block"
+              [href]="location.externalUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <app-icon name="external-link" /> {{ i18n.translate('guest.openMaps') }}
+            </a>
+          }
+        </div>
+      }
+
+      @case ('luggage') {
+        <div class="guest-detail-stack">
+          @switch (info.luggage.kind) {
+            @case ('none') {
+              <app-info-block [value]="copy.text('luggage.none')" />
+            }
+            @case ('internal') {
+              <app-info-block
+                [label]="copy.text('luggage.internal')"
+                [value]="info.luggage.instructions"
+              />
+            }
+            @case ('external-paid') {
+              <app-info-block
+                [label]="copy.text('luggage.externalPaid')"
+                [value]="info.luggage.instructions"
+              />
+              @if (info.luggage.providerName) {
+                <app-info-block
+                  [label]="copy.text('provider')"
+                  [value]="info.luggage.providerName"
+                />
+              }
+              @if (info.luggage.address) {
+                <app-info-block [label]="copy.text('address')" [value]="info.luggage.address" />
+              }
+            }
+          }
+        </div>
+      }
+
+      @case ('parking') {
+        <div class="guest-detail-stack">
+          <app-info-block
+            [value]="
+              copy.text(
+                info.parking.kind === 'none'
+                  ? 'parking.none'
+                  : info.parking.kind === 'on-site'
+                    ? 'parking.onSite'
+                    : info.parking.kind === 'nearby-free'
+                      ? 'parking.nearbyFree'
+                      : info.parking.kind === 'nearby-paid'
+                        ? 'parking.nearbyPaid'
+                        : 'parking.askHost'
+              )
+            "
+          />
+          @if (info.parking.kind !== 'none') {
+            @if (info.parking.address) {
+              <app-info-block [label]="copy.text('address')" [value]="info.parking.address" />
+            }
+            @if (info.parking.instructions) {
+              <app-info-block
+                [label]="copy.text('instructions')"
+                [value]="info.parking.instructions"
+              />
+            }
+          }
+        </div>
+      }
+
+      @case ('internet') {
+        <div class="guest-detail-stack">
+          @if (info.networkName) {
+            <app-info-block [label]="copy.text('networkName')" [value]="info.networkName" />
+          }
+          @if (info.password) {
+            <div class="guest-secret">
+              <button
+                class="button button--secondary button--block"
+                type="button"
+                (click)="toggleWifiPassword()"
+                [attr.aria-expanded]="wifiPasswordRevealed()"
+              >
+                <app-icon [name]="wifiPasswordRevealed() ? 'eye-off' : 'eye'" />
+                {{ i18n.translate(wifiPasswordRevealed() ? 'guest.hide' : 'guest.reveal') }}
+                {{ copy.text('password') }}
+              </button>
+              @if (wifiPasswordRevealed()) {
+                <app-info-block [label]="copy.text('password')" [value]="info.password" />
+              }
+            </div>
+          }
+          @if (info.instructions) {
+            <app-info-block [label]="copy.text('wifiInstructions')" [value]="info.instructions" />
+          }
+        </div>
+      }
+
+      @case ('home-care') {
+        <div class="guest-detail-stack">
+          @if (info.heatingAndCooling) {
+            <app-info-block
+              [label]="copy.text('heatingAndCooling')"
+              [value]="info.heatingAndCooling"
+            />
+          }
+          @if (info.hotWater) {
+            <app-info-block [label]="copy.text('hotWater')" [value]="info.hotWater" />
+          }
+          @if (info.powerIssues) {
+            <app-info-block [label]="copy.text('powerIssues')" [value]="info.powerIssues" />
+          }
+          @if (info.waste) {
+            <app-info-block [label]="copy.text('waste')" [value]="info.waste" />
+          }
+        </div>
+      }
+
+      @case ('house-rules') {
+        <div class="guest-rule-list">
+          @if (info.quietHours?.startTime || info.quietHours?.endTime) {
+            <article>
+              <app-icon name="moon" />
+              <span>{{ copy.text('quietHours') }}</span>
+              <strong
+                >{{ info.quietHours?.startTime ?? '—' }}–{{
+                  info.quietHours?.endTime ?? '—'
+                }}</strong
+              >
+            </article>
+          }
+          <article>
+            <app-icon name="smoking" /><span>{{ copy.text('smoking') }}</span
+            ><strong>{{ policyLabel(info.smoking) }}</strong>
+          </article>
+          <article>
+            <app-icon name="events" /><span>{{ copy.text('events') }}</span
+            ><strong>{{ policyLabel(info.events) }}</strong>
+          </article>
+          <article>
+            <app-icon name="pet" /><span>{{ copy.text('pets') }}</span
+            ><strong>{{ policyLabel(info.pets) }}</strong>
+          </article>
+          <article>
+            <app-icon name="baby" /><span>{{ copy.text('babies') }}</span
+            ><strong>{{ policyLabel(info.babies) }}</strong>
+          </article>
+          <article>
+            <app-icon name="user" /><span>{{ copy.text('children') }}</span
+            ><strong>{{ policyLabel(info.children) }}</strong>
+          </article>
+          <article>
+            <app-icon name="user" /><span>{{ copy.text('visitors') }}</span
+            ><strong>{{ policyLabel(info.visitors) }}</strong>
+          </article>
+          @if (info.additionalNote) {
+            <app-info-block [value]="info.additionalNote" />
+          }
+        </div>
+      }
+
+      @case ('help') {
+        <div class="guest-detail-stack">
+          <a class="guest-emergency" [href]="'tel:' + info.emergencyNumber">
+            <app-icon name="alert-circle" />
+            <span>{{ i18n.translate('guest.emergency') }}</span>
+            <strong>{{ i18n.translate('guest.call112') }}</strong>
+          </a>
+          @if (info.host; as host) {
+            <article class="guest-host-card">
+              @if (host.photoDataUrl) {
+                <img [src]="host.photoDataUrl" [alt]="copy.text('hostPhoto')" />
+              } @else {
+                <span class="guest-host-card__photo"><app-icon name="user" /></span>
+              }
+              <h2>{{ i18n.translate('guest.staySupport') }}</h2>
+              @if (host.name) {
+                <strong>{{ host.name }}</strong>
+              }
+              @if (host.phone) {
+                <a [href]="'tel:' + host.phone">{{ host.phone }}</a>
+              }
+              @if (host.email) {
+                <a [href]="'mailto:' + host.email">{{ host.email }}</a>
+              }
+            </article>
+          }
+        </div>
+      }
+
+      @case ('local-guide') {
+        <div class="guest-service-list">
+          @for (service of info.services; track service.id) {
+            <a class="guest-service-card tone-purple" [routerLink]="service.id">
+              <span class="guest-service-card__icon"><app-icon name="map-pin" /></span>
+              <span>
+                <small>{{ categoryLabel(service) }}</small>
+                <strong>{{ service.title }}</strong>
+                @if (service.distanceFromProperty) {
+                  <span>{{ service.distanceFromProperty }}</span>
+                }
+              </span>
+              <app-icon name="chevron-right" />
+            </a>
+          }
+          <a class="guest-service-card tone-blue" routerLink="../transport">
+            <span class="guest-service-card__icon"><app-icon name="bus" /></span>
+            <span
+              ><strong>{{ i18n.translate('guest.transport') }}</strong></span
+            >
+            <app-icon name="chevron-right" />
+          </a>
+        </div>
+      }
+
+      @case ('transport') {
+        <div class="guest-service-list">
+          @for (service of info.services; track service.id) {
+            <article class="guest-service-card tone-blue">
+              <span class="guest-service-card__icon"
+                ><app-icon [name]="service.transportType === 'taxi' ? 'car' : 'bus'"
+              /></span>
+              <span>
+                <small>{{ transportLabel(service.transportType) }}</small>
+                <strong>{{ service.title }}</strong>
+                @if (service.distanceFromProperty) {
+                  <span>{{ service.distanceFromProperty }}</span>
+                }
+                @if (service.whyUseful) {
+                  <p>{{ service.whyUseful }}</p>
+                }
+              </span>
+            </article>
+          }
+        </div>
+      }
+
+      @case ('extras') {
+        <div class="guest-extra-list">
+          <article class="guest-extra-card tone-blue">
+            <span class="guest-extra-card__icon"><app-icon name="breakfast" /></span>
+            <div>
+              <h2>{{ copy.text('breakfast') }}</h2>
+              <strong>{{ breakfastLabel(info.breakfast.kind) }}</strong>
+              @if (info.breakfast.kind === 'scheduled') {
+                <p>{{ info.breakfast.startTime ?? '—' }}–{{ info.breakfast.endTime ?? '—' }}</p>
+              }
+              @if (info.breakfast.kind !== 'unavailable' && info.breakfast.instructions) {
+                <p>{{ info.breakfast.instructions }}</p>
+              }
+            </div>
+          </article>
+          @if (info.lateCheckout) {
+            <app-extra-card
+              tone="pink"
+              icon="checkout"
+              [title]="copy.text('lateCheckout')"
+              [text]="info.lateCheckout"
+            />
+          }
+          @if (info.familyEquipment) {
+            <app-extra-card
+              tone="green"
+              icon="baby"
+              [title]="copy.text('familyEquipment')"
+              [text]="info.familyEquipment"
+            />
+          }
+          @if (info.petStay) {
+            <app-extra-card
+              tone="yellow"
+              icon="pet"
+              [title]="copy.text('petStay')"
+              [text]="info.petStay"
+            />
+          }
+          @if (info.specialRequests) {
+            <app-extra-card
+              tone="purple"
+              icon="help-circle"
+              [title]="copy.text('specialRequests')"
+              [text]="info.specialRequests"
+            />
+          }
+        </div>
+      }
+
+      @case ('checkout') {
+        <div class="guest-detail-stack">
+          @if (info.checkoutTime) {
+            <article class="guest-highlight tone-green">
+              <span>{{ copy.text('checkoutTime') }}</span
+              ><strong>{{ info.checkoutTime }}</strong>
+            </article>
+          }
+          @if (info.keyReturn) {
+            <app-info-block [label]="copy.text('keyReturn')" [value]="info.keyReturn" />
+          }
+          @if (info.rubbish) {
+            <app-info-block [label]="copy.text('rubbish')" [value]="info.rubbish" />
+          }
+          @if (info.departureNote) {
+            <app-info-block [value]="info.departureNote" />
+          }
+          @if (info.checklist.length > 0) {
+            <section class="guest-checklist" aria-labelledby="personal-checklist-title">
+              <h2 id="personal-checklist-title">{{ i18n.translate('guest.personalChecklist') }}</h2>
+              <p>{{ i18n.translate('guest.checklistHint') }}</p>
+              <div>
+                @for (item of info.checklist; track item.id) {
+                  <label>
+                    <input
+                      type="checkbox"
+                      [checked]="isChecked(item.id)"
+                      (change)="toggleChecklistItem(item.id)"
+                    />
+                    <span>{{ item.label }}</span>
+                  </label>
+                }
+              </div>
+            </section>
+          }
+        </div>
+      }
+    }
+  } @else {
+    <app-guest-unavailable />
+  }
+</main>
