@@ -289,8 +289,10 @@ function mapCheckout(property: Property): GuestCheckoutDetailDto | null {
   };
 }
 
+// This mapper is the allowlist between owner data and guest-visible data. Empty sections are dropped and sensitive codes only travel through the dedicated Home access detail.
 export class GuestGuideMapper {
   toSummary(property: Property): GuestGuideSummaryDto {
+    // The home screen only links to detail cards that actually have something meaningful to show.
     const availableDetails = DETAIL_KINDS.filter((kind) => this.toDetail(property, kind) !== null);
 
     return {

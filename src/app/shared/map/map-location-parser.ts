@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { GoogleMapsExternalUrl, MapLocationParseError, MapLocationParseResult, TrustedMapEmbedUrl } from './map-location.model';
 
 const MAX_INPUT_LENGTH = 2_048;
+// The parsed URL ends up embedded in the guest flow, so we only trust a small Google Maps host allowlist.
 const GOOGLE_MAPS_HOSTS = new Set([
   'google.com',
   'www.google.com',
@@ -70,6 +71,7 @@ export class MapLocationParser {
     return url.hostname.toLowerCase() === 'maps.app.goo.gl';
   }
 
+  // maps.app.goo.gl links are fine for opening externally but not for iframe/embed usage, so we rebuild them into a safe /maps?q=... fallback.
   private buildEmbedFallback(url: URL): TrustedMapEmbedUrl {
     const base = new URL('https://www.google.com/maps');
     const fallbackQuery = url.searchParams.get('q') ?? url.pathname.replace(/^\/+/, '');

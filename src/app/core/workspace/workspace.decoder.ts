@@ -25,6 +25,7 @@ import {
 import { hasExactlyKeys, isBoundedString, isIsoDateTime, isRecord } from '../storage';
 import { ACCOUNT_WORKSPACE_SCHEMA_VERSION, type AccountWorkspace } from './account-workspace.model';
 
+// These limits are part validation, part browser-storage protection. They keep corrupted or oversized payloads from reaching the app state.
 export const WORKSPACE_LIMITS = {
   maximumProperties: 50,
   maximumNearbyServicesPerProperty: 50,
@@ -45,6 +46,7 @@ const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
 const IMAGE_DATA_URL_PATTERN = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
 const IMAGE_ASSET_PATH_PATTERN = /^\/assets\/[A-Za-z0-9._/-]+\.(?:jpe?g|png|webp)$/i;
 
+// The decoder is intentionally strict: if a payload brings unexpected keys, we reject it instead of silently trusting a shape we did not model.
 function isExactRecord(value: unknown, keys: readonly string[]): value is Record<string, unknown> {
   return isRecord(value) && hasExactlyKeys(value, keys);
 }
@@ -299,6 +301,7 @@ function isArrivalAccess(value: unknown): value is Property['arrivalAccess'] {
   );
 }
 
+// Cover images can come either from the live editor as data URLs or from bundled fixture assets. Everything else is rejected.
 function isPropertyCoverImage(value: unknown): value is PropertyCoverImage {
   if (
     !isExactRecord(value, ['dataUrl', 'mimeType', 'altText']) ||
@@ -378,6 +381,7 @@ function isPropertyMetadata(value: unknown): value is PropertyMetadata {
   );
 }
 
+// Property is the main trust boundary for sessionStorage. If any nested branch is malformed, we reject the whole object.
 export function isProperty(value: unknown): value is Property {
   if (
     !isExactRecord(value, [
@@ -435,6 +439,7 @@ export function isOwnerProfile(value: unknown): value is OwnerProfile {
   );
 }
 
+// A workspace is only valid when every property still belongs to the same signed-in owner profile.
 export function isAccountWorkspace(value: unknown): value is AccountWorkspace {
   if (
     !isExactRecord(value, ['schemaVersion', 'profile', 'properties']) ||

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
+// Templates use a small app-specific icon vocabulary so feature code stays readable even if the underlying icon set changes again.
 const MATERIAL_ICONS: Record<string, string> = {
   activity: 'local_activity',
   'alert-circle': 'error',

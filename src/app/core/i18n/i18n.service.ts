@@ -23,6 +23,7 @@ export class I18nService {
   readonly language = computed(() => getDocumentLanguage(this.selectedLocale()));
 
   constructor() {
+    // The full runtime catalog is registered up front so every route can translate immediately without loading separate files.
     this.translateService.addLangs([...supportedLocales]);
 
     for (const locale of supportedLocales) {
@@ -45,6 +46,7 @@ export class I18nService {
     return this.translateService.instant(key, parameters);
   }
 
+  // Storage can be blocked in private mode or strict browser settings, but the current session should still render in a valid locale.
   private readStoredLocale(): SupportedLocale {
     try {
       const value = globalThis.localStorage?.getItem(localeStorageKey);
