@@ -13,10 +13,13 @@ describe('UiIconComponent', () => {
     fixture.componentRef.setInput('name', 'wifi');
     fixture.detectChanges();
 
-    const svg = fixture.nativeElement.querySelector('svg') as SVGElement;
-    expect(svg.getAttribute('aria-hidden')).toBe('true');
-    expect(svg.getAttribute('role')).toBeNull();
-    expect(svg.querySelectorAll('path').length).toBeGreaterThan(0);
+    const icon = fixture.nativeElement.querySelector('mat-icon') as HTMLElement;
+    expect(icon).not.toBeNull();
+    expect(icon.getAttribute('aria-hidden')).toBe('true');
+    expect(icon.getAttribute('role')).toBeNull();
+    expect(icon.getAttribute('data-icon-name')).toBe('wifi');
+    expect(icon.textContent?.trim()).toBe('wifi');
+    expect(icon.classList.contains('material-symbols-outlined')).toBe(true);
   });
 
   it('exposes a meaningful label when the icon carries information', () => {
@@ -25,9 +28,10 @@ describe('UiIconComponent', () => {
     fixture.componentRef.setInput('label', 'Warning');
     fixture.detectChanges();
 
-    const svg = fixture.nativeElement.querySelector('svg') as SVGElement;
-    expect(svg.getAttribute('aria-hidden')).toBeNull();
-    expect(svg.getAttribute('role')).toBe('img');
-    expect(svg.getAttribute('aria-label')).toBe('Warning');
+    const icon = fixture.nativeElement.querySelector('mat-icon') as HTMLElement;
+    expect(icon).not.toBeNull();
+    expect(icon.getAttribute('aria-hidden')).toBeNull();
+    expect(icon.getAttribute('role')).toBe('img');
+    expect(icon.getAttribute('aria-label')).toBe('Warning');
   });
 });

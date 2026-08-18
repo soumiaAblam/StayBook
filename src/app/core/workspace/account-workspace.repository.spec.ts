@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthSessionRepository } from '../auth';
-import { SESSION_STORAGE, STORAGE_KEYS } from '../storage';
+import { LOCAL_STORAGE, SESSION_STORAGE, STORAGE_KEYS } from '../storage';
 import { AccountWorkspaceRepository } from './account-workspace.repository';
 import { createDefaultProperty } from './default-property.factory';
 import { FIXTURE_ACCOUNT_ID } from './fixture-workspace.factory';
@@ -23,7 +23,10 @@ describe('AccountWorkspaceRepository', () => {
   beforeEach(() => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
-      providers: [{ provide: SESSION_STORAGE, useValue: sessionStorage }],
+      providers: [
+        { provide: SESSION_STORAGE, useValue: sessionStorage },
+        { provide: LOCAL_STORAGE, useValue: localStorage },
+      ],
     });
     authSessionRepository = TestBed.inject(AuthSessionRepository);
     repository = TestBed.inject(AccountWorkspaceRepository);
@@ -93,6 +96,17 @@ describe('AccountWorkspaceRepository', () => {
       ok: true,
       value: { properties: [] },
     });
+  });
+
+  it('reads a guest preview snapshot when the current tab has no owner session', () => {
+    authSessionRepository.start('account-1');
+    repository.initialize(profileFor('account-1'));
+    const property = createDefaultProperty({ id: 'property-1', ownerAccountId: 'account-1' });
+    expect(repository.upsertProperty(property).ok).toBe(true);
+
+    authSessionRepository.clear();
+
+    expect(repository.findProperty('property-1')).toEqual({ ok: true, value: property });
   });
 
   it('fails safely without an authenticated account or with corrupt workspace data', () => {
@@ -168,6 +182,41 @@ describe('AccountWorkspaceRepository', () => {
     expect(repository.listProperties()).toMatchObject({
       ok: true,
       value: [{ id: 'custom-fixture-property' }],
+    });
+  });
+
+  it('recovers from a corrupted fixture seed marker and reseeds fixture properties', () => {
+    authSessionRepository.start(FIXTURE_ACCOUNT_ID);
+    sessionStorage.setItem(STORAGE_KEYS.fixtureState, '{"corrupted":true}');
+
+    expect(repository.seedFixtureForCurrentAccount(new Date('2026-08-13T12:00:00.000Z'))).toEqual({
+      ok: true,
+      value: { seeded: true, reason: 'seeded' },
+    });
+    expect(repository.listProperties()).toMatchObject({
+      ok: true,
+      value: [{}, {}, {}],
+    });
+  });
+
+  it('recovers from a corrupted fixture workspace payload and reseeds fixture properties', () => {
+    authSessionRepository.start(FIXTURE_ACCOUNT_ID);
+    sessionStorage.setItem(
+      STORAGE_KEYS.workspace(FIXTURE_ACCOUNT_ID),
+      JSON.stringify({
+        schemaVersion: 1,
+        updatedAt: '2026-08-13T12:00:00.000Z',
+        data: { schemaVersion: 1, injected: true },
+      }),
+    );
+
+    expect(repository.seedFixtureForCurrentAccount(new Date('2026-08-13T12:00:00.000Z'))).toEqual({
+      ok: true,
+      value: { seeded: true, reason: 'seeded' },
+    });
+    expect(repository.listProperties()).toMatchObject({
+      ok: true,
+      value: [{}, {}, {}],
     });
   });
 });

@@ -27,7 +27,6 @@ export interface GuestGuideSummaryDto {
   readonly propertyName: string;
   readonly propertyType: PropertyType;
   readonly cityOrArea: string;
-  readonly welcomeMessage: string;
   readonly coverImageDataUrl?: string;
   readonly lastReviewedAt: string;
   readonly availableDetails: readonly GuestGuideDetailKind[];

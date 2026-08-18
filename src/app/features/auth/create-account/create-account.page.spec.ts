@@ -1,6 +1,8 @@
 import { provideRouter, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { LocalAuthService } from '../../../core/auth';
+import { createTranslateServiceStub } from '../../../testing/translate-service.stub';
 import { CreateAccountPage } from './create-account.page';
 
 describe('CreateAccountPage', () => {
@@ -18,6 +20,7 @@ describe('CreateAccountPage', () => {
           provide: LocalAuthService,
           useValue: { register },
         },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
       ],
     }).compileComponents();
   });

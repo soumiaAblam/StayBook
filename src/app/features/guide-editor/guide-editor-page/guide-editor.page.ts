@@ -524,7 +524,6 @@ export class GuideEditorPage {
       name: property.overview.name,
       cityOrArea: property.overview.cityOrArea,
       propertyType: property.overview.propertyType,
-      welcomeMessage: property.overview.welcomeMessage,
       coverAltText: property.overview.coverImage?.altText ?? '',
     });
     this.coverImage.set(property.overview.coverImage);

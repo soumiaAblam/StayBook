@@ -81,7 +81,11 @@ function createCompleteProperty(now: Date): Property {
       },
     },
     homeEssentials: {
-      wifi: null,
+      wifi: {
+        networkName: 'CasaOlmo Guest',
+        password: '',
+        instructions: '',
+      },
       homeCare: {
         heatingAndCooling: 'Use the wall controls in the living room.',
         hotWater: 'Hot water is available throughout the stay.',
@@ -202,6 +206,19 @@ function createNearlyEmptyProperty(now: Date): Property {
       ...property.overview,
       name: 'Cactus House Draft',
       cityOrArea: 'Desert View (fictional)',
+      coverImage: {
+        dataUrl: '/assets/house.jpg',
+        mimeType: 'image/jpeg',
+        altText: 'Cactus House Draft',
+      },
+    },
+    arrivalAccess: {
+      ...property.arrivalAccess,
+      location: {
+        writtenAddress: 'Desert View, California (fictional)',
+        mapReference: 'https://maps.app.goo.gl/zje4hatvhzWc91rAA',
+        directions: 'Use the desert trail after the first bend in the road.',
+      },
     },
     internalNotes: 'Nearly empty fixture used to demonstrate the attention state.',
   };

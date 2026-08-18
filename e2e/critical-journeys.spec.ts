@@ -1,8 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-const fixtureEmail = 'demo@staybook.local';
-const fixturePassword = 'StayBookDemo2026!';
+const fixtureEmail = 'demo@demo.com';
+const fixturePassword = 'demo123';
 
 async function resetBrowserStorage(page: Page): Promise<void> {
   await page.addInitScript(() => {

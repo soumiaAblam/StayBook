@@ -32,6 +32,9 @@ export type GuestCopyKey =
   | 'heatingAndCooling'
   | 'hostPhoto'
   | 'hotWater'
+  | 'internetHelp'
+  | 'internetIntro'
+  | 'internetSupport'
   | 'instructions'
   | 'keyReturn'
   | 'lateCheckout'
@@ -97,6 +100,9 @@ const english: GuestCopyCatalog = {
   heatingAndCooling: 'Heating and cooling',
   hostPhoto: 'Host profile photo',
   hotWater: 'Hot water',
+  internetHelp: 'Need help with internet?',
+  internetIntro: 'Connect to the property Wi-Fi with the details provided by your host.',
+  internetSupport: 'Your host can provide the current connection details.',
   instructions: 'Instructions',
   keyReturn: 'Key return',
   lateCheckout: 'Late check-out',
@@ -161,6 +167,9 @@ const spanish: GuestCopyCatalog = {
   heatingAndCooling: 'Calefacción y aire acondicionado',
   hostPhoto: 'Foto de perfil del anfitrión',
   hotWater: 'Agua caliente',
+  internetHelp: '¿Necesitas ayuda con internet?',
+  internetIntro: 'Conéctate al Wi-Fi del alojamiento con los datos que te comparte tu anfitrión.',
+  internetSupport: 'Tu anfitrión puede facilitarte los datos de conexión actualizados.',
   instructions: 'Instrucciones',
   keyReturn: 'Devolución de llaves',
   lateCheckout: 'Salida tardía',
@@ -225,6 +234,9 @@ const french: GuestCopyCatalog = {
   heatingAndCooling: 'Chauffage et climatisation',
   hostPhoto: "Photo de profil de l'hôte",
   hotWater: 'Eau chaude',
+  internetHelp: "Besoin d'aide avec Internet ?",
+  internetIntro: "Connectez-vous au Wi-Fi du logement avec les informations fournies par votre hôte.",
+  internetSupport: "Votre hôte peut vous fournir les informations de connexion à jour.",
   instructions: 'Instructions',
   keyReturn: 'Retour des clés',
   lateCheckout: 'Départ tardif',
@@ -289,6 +301,9 @@ const german: GuestCopyCatalog = {
   heatingAndCooling: 'Heizung und Klimaanlage',
   hostPhoto: 'Profilfoto des Gastgebers',
   hotWater: 'Warmwasser',
+  internetHelp: 'Brauchst du Hilfe mit dem Internet?',
+  internetIntro: 'Verbinde dich mit dem WLAN der Unterkunft mit den Angaben deines Gastgebers.',
+  internetSupport: 'Dein Gastgeber kann dir die aktuellen Verbindungsdaten geben.',
   instructions: 'Anweisungen',
   keyReturn: 'Schlüsselrückgabe',
   lateCheckout: 'Später Check-out',

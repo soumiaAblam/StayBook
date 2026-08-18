@@ -65,6 +65,35 @@ describe('workspace runtime decoders', () => {
     expect(isProperty(invalidTime)).toBe(false);
   });
 
+  it('accepts a local /assets cover image path only when mime type matches', () => {
+    const property = createDefaultProperty({ id: 'property-1', ownerAccountId: profile.accountId });
+    const validAssetImage = {
+      ...property,
+      overview: {
+        ...property.overview,
+        coverImage: {
+          dataUrl: '/assets/house.jpg',
+          mimeType: 'image/jpeg',
+          altText: 'House cover',
+        },
+      },
+    };
+    const invalidAssetImage = {
+      ...property,
+      overview: {
+        ...property.overview,
+        coverImage: {
+          dataUrl: '/assets/house.jpg',
+          mimeType: 'image/png',
+          altText: 'Wrong mime',
+        },
+      },
+    };
+
+    expect(isProperty(validAssetImage)).toBe(true);
+    expect(isProperty(invalidAssetImage)).toBe(false);
+  });
+
   it('rejects duplicate property IDs and cross-account ownership', () => {
     const property = createDefaultProperty({ id: 'property-1', ownerAccountId: profile.accountId });
     const duplicateWorkspace = {

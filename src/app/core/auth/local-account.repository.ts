@@ -86,4 +86,22 @@ export class LocalAccountRepository {
 
     return this.adapter.write({ accounts: [...accountsResult.value, account] });
   }
+
+  replace(account: LocalAccount): StorageResult<void> {
+    if (!isLocalAccount(account)) {
+      return storageFailure('invalid-data', STORAGE_KEYS.accounts);
+    }
+
+    const accountsResult = this.list();
+
+    if (!accountsResult.ok) {
+      return accountsResult;
+    }
+
+    const nextAccounts = accountsResult.value.filter(
+      (candidate) => candidate.id !== account.id && candidate.email !== account.email,
+    );
+
+    return this.adapter.write({ accounts: [...nextAccounts, account] });
+  }
 }

@@ -140,7 +140,6 @@ describe('GuestGuideMapper', () => {
       propertyName: 'Casa Olmo',
       propertyType: 'apartment',
       cityOrArea: 'Valencia, Spain',
-      welcomeMessage: 'Welcome to Casa Olmo.',
       coverImageDataUrl: 'data:image/webp;base64,fictional-cover',
       lastReviewedAt: '2026-07-15T10:00:00.000Z',
       availableDetails: expect.arrayContaining([

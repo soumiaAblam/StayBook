@@ -18,62 +18,50 @@
           @if (info.instructions) {
             <app-info-block [label]="copy.text('instructions')" [value]="info.instructions" />
           }
+        </div>
+      }
 
-          @if (homeAccess(); as access) {
-            @if (access.kind === 'home-access') {
-              <section class="guest-subsection" aria-labelledby="home-access-title">
-                <h2 id="home-access-title">{{ i18n.translate('guest.homeAccess') }}</h2>
-                <app-info-block
-                  [label]="copy.text('accessMethod')"
-                  [value]="
-                    copy.text(
-                      access.method === 'meet-host'
-                        ? 'accessMethod.meetHost'
-                        : access.method === 'lockbox'
-                          ? 'accessMethod.lockbox'
-                          : access.method === 'door'
-                            ? 'accessMethod.door'
-                            : 'accessMethod.other'
-                    )
-                  "
-                />
-                @if (access.instructions) {
-                  <app-info-block
-                    [label]="copy.text('instructions')"
-                    [value]="access.instructions"
-                  />
-                }
-                @if (access.doorCode || access.lockboxCode) {
-                  <div class="guest-secret">
-                    <button
-                      class="button button--secondary button--block"
-                      type="button"
-                      (click)="toggleAccess()"
-                      [attr.aria-expanded]="accessRevealed()"
-                    >
-                      <app-icon [name]="accessRevealed() ? 'eye-off' : 'eye'" />
-                      {{ i18n.translate(accessRevealed() ? 'guest.hide' : 'guest.reveal') }}
-                    </button>
-                    @if (accessRevealed()) {
-                      <div class="guest-secret__values" aria-live="polite">
-                        @if (access.doorCode) {
-                          <app-info-block
-                            [label]="copy.text('doorCode')"
-                            [value]="access.doorCode"
-                          />
-                        }
-                        @if (access.lockboxCode) {
-                          <app-info-block
-                            [label]="copy.text('lockboxCode')"
-                            [value]="access.lockboxCode"
-                          />
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-              </section>
-            }
+      @case ('home-access') {
+        <div class="guest-detail-stack">
+          <app-info-block
+            [label]="copy.text('accessMethod')"
+            [value]="
+              copy.text(
+                info.method === 'meet-host'
+                  ? 'accessMethod.meetHost'
+                  : info.method === 'lockbox'
+                    ? 'accessMethod.lockbox'
+                    : info.method === 'door'
+                      ? 'accessMethod.door'
+                      : 'accessMethod.other'
+              )
+            "
+          />
+          @if (info.instructions) {
+            <app-info-block [label]="copy.text('instructions')" [value]="info.instructions" />
+          }
+          @if (info.doorCode || info.lockboxCode) {
+            <div class="guest-secret">
+              <button
+                class="button button--secondary button--block"
+                type="button"
+                (click)="toggleAccess()"
+                [attr.aria-expanded]="accessRevealed()"
+              >
+                <app-icon [name]="accessRevealed() ? 'eye-off' : 'eye'" />
+                {{ i18n.translate(accessRevealed() ? 'guest.hide' : 'guest.reveal') }}
+              </button>
+              @if (accessRevealed()) {
+                <div class="guest-secret__values" aria-live="polite">
+                  @if (info.doorCode) {
+                    <app-info-block [label]="copy.text('doorCode')" [value]="info.doorCode" />
+                  }
+                  @if (info.lockboxCode) {
+                    <app-info-block [label]="copy.text('lockboxCode')" [value]="info.lockboxCode" />
+                  }
+                </div>
+              }
+            </div>
           }
         </div>
       }
@@ -84,16 +72,24 @@
           @if (info.directions) {
             <app-info-block [label]="copy.text('directions')" [value]="info.directions" />
           }
-          @if (safeEmbedUrl(); as mapUrl) {
-            <iframe
-              class="guest-map"
-              [src]="mapUrl"
-              [title]="copy.text('mapPreview')"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-            ></iframe>
-          }
           @if (mapLocation(); as location) {
+            <div class="guest-location-card" [class.guest-location-card--expanded]="safeEmbedUrl()">
+              @if (safeEmbedUrl(); as mapUrl) {
+                <iframe
+                  class="guest-map"
+                  [src]="mapUrl"
+                  [title]="copy.text('mapPreview')"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                ></iframe>
+              } @else {
+                <div class="guest-location-card__preview guest-location-card__preview--generic">
+                  <app-icon name="map-pin" />
+                  <span>{{ i18n.translate('guest.openMaps') }}</span>
+                </div>
+              }
+            </div>
             <a
               class="button button--primary button--block"
               [href]="location.externalUrl"
@@ -170,29 +166,24 @@
 
       @case ('internet') {
         <div class="guest-detail-stack">
-          @if (info.networkName) {
-            <app-info-block [label]="copy.text('networkName')" [value]="info.networkName" />
-          }
-          @if (info.password) {
-            <div class="guest-secret">
-              <button
-                class="button button--secondary button--block"
-                type="button"
-                (click)="toggleWifiPassword()"
-                [attr.aria-expanded]="wifiPasswordRevealed()"
-              >
-                <app-icon [name]="wifiPasswordRevealed() ? 'eye-off' : 'eye'" />
-                {{ i18n.translate(wifiPasswordRevealed() ? 'guest.hide' : 'guest.reveal') }}
-                {{ copy.text('password') }}
-              </button>
-              @if (wifiPasswordRevealed()) {
-                <app-info-block [label]="copy.text('password')" [value]="info.password" />
-              }
+          <p class="guest-detail__intro">{{ copy.text('internetIntro') }}</p>
+          <article class="guest-wifi-card">
+            <div class="guest-wifi-card__head">
+              <span class="guest-wifi-card__symbol"><app-icon name="wifi" /></span>
+              <div>
+                <small>{{ copy.text('networkName') }}</small>
+                <h2>{{ info.networkName || i18n.translate('common.notAvailable') }}</h2>
+              </div>
             </div>
-          }
-          @if (info.instructions) {
-            <app-info-block [label]="copy.text('wifiInstructions')" [value]="info.instructions" />
-          }
+            <div class="guest-wifi-card__password">
+              <span>{{ copy.text('password') }}</span>
+              <code>{{ info.password || copy.text('askHost') }}</code>
+            </div>
+            <p>{{ info.instructions || copy.text('internetSupport') }}</p>
+          </article>
+          <a class="guest-full-link" routerLink="../help">
+            {{ copy.text('internetHelp') }} <span aria-hidden="true">→</span>
+          </a>
         </div>
       }
 

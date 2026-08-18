@@ -4,6 +4,7 @@ import type { Property, PropertyId } from '../../domain/property';
 import { AuthSessionRepository } from '../auth';
 import {
   isRecord,
+  LOCAL_STORAGE,
   SESSION_STORAGE,
   SessionWorkspaceRepository,
   STORAGE_KEYS,
@@ -36,6 +37,13 @@ interface CurrentWorkspaceContext {
   readonly repository: SessionWorkspaceRepository<AccountWorkspace>;
 }
 
+function createInitialFixtureSeedState(): FixtureSeedState {
+  return {
+    schemaVersion: FIXTURE_STATE_SCHEMA_VERSION,
+    seededAccountIds: [],
+  };
+}
+
 function isFixtureSeedState(value: unknown): value is FixtureSeedState {
   return (
     isRecord(value) &&
@@ -54,6 +62,7 @@ function isFixtureSeedState(value: unknown): value is FixtureSeedState {
 @Injectable({ providedIn: 'root' })
 export class AccountWorkspaceRepository {
   private readonly sessionStorage = inject(SESSION_STORAGE);
+  private readonly localStorage = inject(LOCAL_STORAGE);
   private readonly authSessionRepository = inject(AuthSessionRepository);
   private readonly fixtureStateRepository = new VersionedBrowserStorage<FixtureSeedState>(
     this.sessionStorage,
@@ -65,7 +74,18 @@ export class AccountWorkspaceRepository {
   read(): StorageResult<AccountWorkspace | null> {
     const contextResult = this.currentContext();
 
-    return contextResult.ok ? contextResult.value.repository.read() : contextResult;
+    if (!contextResult.ok) {
+      return contextResult;
+    }
+
+    const workspaceResult = contextResult.value.repository.read();
+    if (workspaceResult.ok && workspaceResult.value !== null) {
+      for (const property of workspaceResult.value.properties) {
+        this.writeGuestPreview(property);
+      }
+    }
+
+    return workspaceResult;
   }
 
   initialize(profile: OwnerProfile): StorageResult<AccountWorkspace> {
@@ -108,7 +128,15 @@ export class AccountWorkspaceRepository {
     }
 
     const saveResult = repository.save(workspace);
-    return saveResult.ok ? storageSuccess(workspace) : saveResult;
+    if (!saveResult.ok) {
+      return saveResult;
+    }
+
+    for (const property of workspace.properties) {
+      this.writeGuestPreview(property);
+    }
+
+    return storageSuccess(workspace);
   }
 
   updateProfile(profile: OwnerProfile): StorageResult<AccountWorkspace> {
@@ -139,12 +167,19 @@ export class AccountWorkspaceRepository {
     const propertiesResult = this.listProperties();
 
     if (!propertiesResult.ok) {
+      const previewResult = this.readGuestPreview(propertyId);
+      if (previewResult.ok && previewResult.value !== null) {
+        return previewResult;
+      }
       return propertiesResult;
     }
 
-    return storageSuccess(
-      propertiesResult.value.find((property) => property.id === propertyId) ?? null,
-    );
+    const property = propertiesResult.value.find((candidate) => candidate.id === propertyId) ?? null;
+    if (property !== null) {
+      return storageSuccess(property);
+    }
+
+    return this.readGuestPreview(propertyId);
   }
 
   upsertProperty(property: Property): StorageResult<AccountWorkspace> {
@@ -204,10 +239,15 @@ export class AccountWorkspaceRepository {
       return storageFailure('invalid-data', key);
     }
 
-    return this.save({
+    const nextWorkspace = {
       ...workspaceResult.value,
       properties: workspaceResult.value.properties.filter((property) => property.id !== propertyId),
-    });
+    };
+    const saveResult = this.save(nextWorkspace);
+    if (saveResult.ok) {
+      this.removeGuestPreview(propertyId);
+    }
+    return saveResult;
   }
 
   seedFixtureForCurrentAccount(now = new Date()): StorageResult<FixtureSeedOutcome> {
@@ -222,21 +262,18 @@ export class AccountWorkspaceRepository {
       return storageFailure('invalid-data', STORAGE_KEYS.fixtureState);
     }
 
-    const stateResult = this.fixtureStateRepository.read();
+    const stateResult = this.readFixtureSeedState();
     if (!stateResult.ok) {
       return stateResult;
     }
 
-    const state = stateResult.value ?? {
-      schemaVersion: FIXTURE_STATE_SCHEMA_VERSION,
-      seededAccountIds: [],
-    };
+    const state = stateResult.value;
 
     if (state.seededAccountIds.includes(accountId)) {
       return storageSuccess({ seeded: false, reason: 'already-seeded' });
     }
 
-    const workspaceResult = repository.read();
+    const workspaceResult = this.readFixtureWorkspace(repository);
     if (!workspaceResult.ok) {
       return workspaceResult;
     }
@@ -258,6 +295,90 @@ export class AccountWorkspaceRepository {
     });
 
     return markerResult.ok ? storageSuccess(outcome) : markerResult;
+  }
+
+  private readFixtureSeedState(): StorageResult<FixtureSeedState> {
+    const stateResult = this.fixtureStateRepository.read();
+    if (stateResult.ok) {
+      return storageSuccess(stateResult.value ?? createInitialFixtureSeedState());
+    }
+
+    if (!['invalid-data', 'unsupported-schema'].includes(stateResult.error.code)) {
+      return stateResult;
+    }
+
+    const resetResult = this.fixtureStateRepository.remove();
+    if (!resetResult.ok) {
+      return resetResult;
+    }
+
+    return storageSuccess(createInitialFixtureSeedState());
+  }
+
+  private readFixtureWorkspace(
+    repository: SessionWorkspaceRepository<AccountWorkspace>,
+  ): StorageResult<AccountWorkspace | null> {
+    const workspaceResult = repository.read();
+    if (workspaceResult.ok) {
+      return workspaceResult;
+    }
+
+    if (!['invalid-data', 'unsupported-schema'].includes(workspaceResult.error.code)) {
+      return workspaceResult;
+    }
+
+    const clearResult = repository.clear();
+    if (!clearResult.ok) {
+      return clearResult;
+    }
+
+    return storageSuccess(null);
+  }
+
+  private readGuestPreview(propertyId: PropertyId): StorageResult<Property | null> {
+    if (!this.localStorage) {
+      return storageSuccess(null);
+    }
+
+    const key = STORAGE_KEYS.guestPreview(propertyId);
+    const snapshot = this.localStorage.getItem(key);
+    if (snapshot === null) {
+      return storageSuccess(null);
+    }
+
+    try {
+      const value = JSON.parse(snapshot) as Partial<Property>;
+      if (!value || value.id !== propertyId || !value.ownerAccountId) {
+        return storageSuccess(null);
+      }
+      return storageSuccess(value as Property);
+    } catch {
+      return storageSuccess(null);
+    }
+  }
+
+  private writeGuestPreview(property: Property): void {
+    if (!this.localStorage) {
+      return;
+    }
+
+    try {
+      this.localStorage.setItem(STORAGE_KEYS.guestPreview(property.id), JSON.stringify(property));
+    } catch {
+      // Ignore browser storage write failures for the guest-preview cache.
+    }
+  }
+
+  private removeGuestPreview(propertyId: PropertyId): void {
+    if (!this.localStorage) {
+      return;
+    }
+
+    try {
+      this.localStorage.removeItem(STORAGE_KEYS.guestPreview(propertyId));
+    } catch {
+      // Ignore browser storage write failures for the guest-preview cache.
+    }
   }
 
   private currentContext(): StorageResult<CurrentWorkspaceContext> {

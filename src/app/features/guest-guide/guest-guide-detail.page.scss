@@ -69,16 +69,172 @@
   font-size: 1.875rem;
 }
 
+.guest-detail__intro {
+  margin: 0;
+  color: #71849a;
+  font-size: 0.6875rem;
+  line-height: 1.55;
+}
+
+.guest-wifi-card {
+  margin-bottom: var(--space-1);
+  padding: 1rem;
+  border-radius: 0.8125rem;
+  color: var(--color-white);
+  background: linear-gradient(140deg, #105cb1, #2583ed);
+  box-shadow: 0 0.625rem 1.25rem rgb(21 111 231 / 17%);
+}
+
+.guest-wifi-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.guest-wifi-card__symbol {
+  display: grid;
+  inline-size: 2.0625rem;
+  block-size: 2.0625rem;
+  border-radius: 0.5625rem;
+  color: var(--color-blue-strong);
+  background: var(--color-white);
+  font-size: 1rem;
+  place-items: center;
+}
+
+.guest-wifi-card__head small {
+  color: #c5e0ff;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.guest-wifi-card__head h2 {
+  margin: 0.125rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 640;
+  letter-spacing: -0.03em;
+  color: var(--color-white);
+}
+
+.guest-wifi-card__password {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0.9375rem 0 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.4375rem;
+  background: rgb(255 255 255 / 14%);
+}
+
+.guest-wifi-card__password span {
+  color: #d9ebff;
+  font-size: 0.5625rem;
+}
+
+.guest-wifi-card__password code {
+  flex: 1;
+  color: var(--color-white);
+  font-size: 0.625rem;
+}
+
+.guest-wifi-card > p {
+  margin: 0;
+  color: #cfe4fa;
+  font-size: 0.5625rem;
+  line-height: 1.4;
+}
+
+.guest-full-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.125rem;
+  padding: 0.6875rem 0.125rem;
+  border: 0;
+  border-top: 1px solid #e6edf5;
+  color: var(--color-blue-strong);
+  background: transparent;
+  font-size: 0.625rem;
+  font-weight: 750;
+  text-align: left;
+  text-decoration: none;
+}
+
+.guest-full-link span {
+  font-size: 0.9375rem;
+}
+
 .guest-secret {
   display: grid;
   gap: var(--space-3);
 }
 
-.guest-map {
-  inline-size: 100%;
-  block-size: 14.375rem;
+.guest-location-card {
+  display: block;
+  width: 100%;
+  padding: 0;
   border: 1px solid var(--color-purple-border);
   border-radius: 0.9375rem;
+  background: var(--color-purple-soft);
+  color: var(--color-navy);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.guest-location-card:hover,
+.guest-location-card:focus-visible {
+  border-color: var(--color-purple-strong);
+  box-shadow: 0 0.75rem 1.5rem rgb(106 82 198 / 14%);
+  transform: translateY(-1px);
+}
+
+.guest-location-card--expanded {
+  border-color: var(--color-purple-strong);
+  box-shadow: 0 0.75rem 1.5rem rgb(106 82 198 / 18%);
+}
+
+.guest-location-card__preview {
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  min-block-size: 14.375rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, var(--color-purple-soft), #efebff);
+}
+
+.guest-location-card__preview app-icon {
+  font-size: 2.5rem;
+}
+
+.guest-location-card__preview span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.guest-location-card__preview--generic {
+  background: linear-gradient(135deg, #f4f0ff, #ebf7ff);
+}
+
+.guest-location-card__preview--google {
+  background: linear-gradient(135deg, #e7fff9, #edf5ff);
+}
+
+.guest-map {
+  display: block;
+  inline-size: 100%;
+  block-size: 14.375rem;
+  border: 0;
   background: var(--color-purple-soft);
 }
 

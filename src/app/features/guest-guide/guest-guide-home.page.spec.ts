@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import type { GuestGuideSummaryDto } from '../../domain/guest-guide';
 import { GuestGuideFacade } from './guest-guide.facade';
 import { GuestGuideHomePage } from './guest-guide-home.page';
@@ -10,7 +11,6 @@ const summary: GuestGuideSummaryDto = {
   propertyName: 'Casa Olmo',
   propertyType: 'apartment',
   cityOrArea: 'Valencia',
-  welcomeMessage: 'Welcome.',
   lastReviewedAt: '2026-08-13T12:00:00.000Z',
   availableDetails: ['check-in', 'home-address', 'local-guide'],
 };
@@ -31,6 +31,31 @@ describe('GuestGuideHomePage', () => {
           provide: GuestGuideFacade,
           useValue: { summary: summarySignal.asReadonly() },
         },
+        {
+          provide: TranslateService,
+          useValue: {
+            addLangs: vi.fn(),
+            setTranslation: vi.fn(),
+            setFallbackLang: vi.fn(),
+            use: vi.fn(),
+            instant: (key: string) =>
+              ({
+                'guest.beforeArrival': 'Before you arrive',
+                'guest.essentialsNow': 'Essentials now',
+                'guest.duringStay': 'During your stay',
+                'guest.explore': 'Explore the area',
+                'guest.beforeLeave': 'Before you leave',
+                'guest.homeAddress': 'Home address',
+                'guest.homeAccess': 'Home access',
+                'guest.localGuide': 'Local guide',
+                'guest.unavailable.title': 'This information is not available yet',
+                'guest.unavailable.body': 'Your host has not added details for this section.',
+                'guest.welcome': 'Welcome to Casa Olmo',
+                'guest.lastReviewed': 'Last reviewed: 13 August 2026',
+                'guest.startHere': 'Start here',
+              }[key] ?? key),
+          },
+        },
       ],
     }).compileComponents();
   });
@@ -44,13 +69,14 @@ describe('GuestGuideHomePage', () => {
     );
 
     expect(headings).toEqual([
-      'Essentials now',
       'Before you arrive',
+      'Essentials now',
       'During your stay',
       'Explore the area',
       'Before you leave',
     ]);
     expect(element.querySelector('a[href="/home-address"]')?.textContent).toContain('Home address');
+    expect(element.querySelector('a[href="/home-access"]')?.textContent).toContain('Home access');
     expect(element.querySelector('a[href="/local-guide"]')?.textContent).toContain('Local guide');
   });
 

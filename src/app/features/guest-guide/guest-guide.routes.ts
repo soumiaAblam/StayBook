@@ -16,6 +16,7 @@ export const GUEST_GUIDE_ROUTES: Routes = [
       },
       ...[
         'check-in',
+        'home-access',
         'home-address',
         'luggage',
         'parking',

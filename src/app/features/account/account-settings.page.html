@@ -54,15 +54,6 @@
               [placeholder]="i18n.translate('account.contactPhone.placeholder')"
             />
           </div>
-
-          <div class="field">
-            <label for="account-locale">{{ i18n.translate('account.language') }}</label>
-            <select id="account-locale" formControlName="locale">
-              @for (option of localeOptions; track option.locale) {
-                <option [value]="option.locale">{{ option.flag }} {{ option.nativeName }}</option>
-              }
-            </select>
-          </div>
         </div>
       </fieldset>
 

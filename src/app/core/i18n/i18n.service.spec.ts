@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { translationCatalogs, TranslationKey } from './catalogs';
 import { I18nService } from './i18n.service';
 import { localeStorageKey, supportedLocales } from './locale';
+import { createTranslateServiceStub } from '../../testing/translate-service.stub';
 
 const intentionalSharedCopy: Readonly<
   Record<'es-ES' | 'fr-FR' | 'de-DE', ReadonlySet<TranslationKey>>
@@ -42,6 +44,9 @@ describe('I18nService', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [{ provide: TranslateService, useValue: createTranslateServiceStub() }],
+    });
   });
 
   it('uses English as the safe fallback', () => {
