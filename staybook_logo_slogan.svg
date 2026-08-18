@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="970" height="260" viewBox="80 20 970 260" role="img" aria-labelledby="title desc">
+  <title id="title">StayBook combined logo</title>
+  <desc id="desc">Original StayBook suitcase icon with a fuchsia Stay and blue Book wordmark, plus the slogan Every answer. Only One Place.</desc>
+  <defs>
+    <linearGradient id="sbBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#156FE7"/>
+      <stop offset="100%" stop-color="#105CB1"/>
+    </linearGradient>
+    <style>
+      .wordmark {
+        font-family: Inter, Poppins, Montserrat, Arial, Helvetica, sans-serif;
+        font-size: 108px;
+        font-weight: 700;
+        letter-spacing: -3px;
+      }
+      .tagline {
+        font-family: Inter, Poppins, Montserrat, Arial, Helvetica, sans-serif;
+        font-size: 46px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        fill: #105CB1;
+        opacity: 0.72;
+      }
+    </style>
+  </defs>
+
+  <!-- Original approved suitcase icon from staybook_logo_01.svg -->
+  <g transform="translate(86 42)">
+    <rect x="76" y="0" width="48" height="26" rx="12" fill="none" stroke="url(#sbBlue)" stroke-width="10"/>
+    <rect x="24" y="34" width="152" height="158" rx="24" fill="url(#sbBlue)"/>
+    <rect x="52" y="44" width="6" height="138" rx="3" fill="#FFFFFF" opacity="0.95"/>
+    <rect x="142" y="44" width="6" height="138" rx="3" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M100 70c-24 0-44 19-44 43 0 33 44 74 44 74s44-41 44-74c0-24-20-43-44-43z" fill="#FF3AA7"/>
+    <circle cx="100" cy="113" r="16" fill="#FFFFFF"/>
+    <rect x="16" y="192" width="168" height="14" rx="7" fill="#03D26E"/>
+    <circle cx="58" cy="212" r="8" fill="#105CB1"/>
+    <circle cx="142" cy="212" r="8" fill="#105CB1"/>
+  </g>
+
+  <!-- Wordmark styling from the previous proposal: Stay pink, Book blue -->
+  <text x="320" y="182" class="wordmark">
+    <tspan fill="#FF3AA7">Stay</tspan><tspan fill="#156FE7">Book</tspan>
+  </text>
+
+  <text x="326" y="248" class="tagline">Every answer. Only One Place.</text>
+</svg>

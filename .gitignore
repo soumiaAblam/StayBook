@@ -1,0 +1,30 @@
+/AGENTS.md
+/.sdd/
+
+# Angular build output and dependencies.
+/dist/
+/tmp/
+/out-tsc/
+/bazel-out/
+/node_modules/
+/.angular/cache/
+/coverage/
+
+# Test output.
+/playwright-report/
+/test-results/
+/blob-report/
+/__screenshots__/
+
+# Local environment files and logs.
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-error.log*
+
+# IDE and operating-system files.
+/.idea/
+/.history/
+.DS_Store
+Thumbs.db
