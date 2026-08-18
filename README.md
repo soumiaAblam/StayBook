@@ -70,7 +70,12 @@ All source code, file names, routes, symbols, tests, technical documentation and
 
 ## Demo fixture
 
-A documented fixture account with three fictional properties will be added here when that fixture is implemented. Until then, no fixture credentials should be assumed.
+Use this public, fictional account to review a complete dashboard without entering setup data:
+
+- Email: `demo@staybook.local`
+- Password: `StayBookDemo2026!`
+
+The account seeds exactly three fictional properties into the current browser-tab session. It contains no real access codes, Wi-Fi credentials, addresses or personal contacts. Changes persist only for that tab session and are not overwritten while it remains open. Accounts created through the interface start with an empty property dashboard.
 
 ## Production status
 

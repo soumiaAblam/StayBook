@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.new-property-state {
+  display: grid;
+  min-block-size: 14rem;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.new-property-icon {
+  display: grid;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  border-radius: 50%;
+  color: var(--color-blue-strong);
+  background: var(--color-blue-soft);
+  font-size: 1.65rem;
+  place-items: center;
+}

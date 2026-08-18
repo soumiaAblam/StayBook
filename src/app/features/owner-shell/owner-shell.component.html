@@ -1,0 +1,42 @@
+<div class="owner-shell">
+  <aside class="owner-navigation" aria-label="Owner navigation">
+    <a class="owner-brand" routerLink="/owner/properties" aria-label="StayBook properties">
+      <img src="/assets/brand/staybook-logo-slogan.svg" alt="StayBook" width="970" height="260" />
+    </a>
+
+    <nav class="owner-nav-links">
+      <a
+        routerLink="/owner/properties"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <app-icon name="home" />
+        <span>{{ i18n.translate('nav.properties') }}</span>
+      </a>
+      <a routerLink="/owner/account" routerLinkActive="active">
+        <app-icon name="user" />
+        <span>{{ i18n.translate('nav.account') }}</span>
+      </a>
+    </nav>
+
+    <div class="owner-nav-actions">
+      <label class="locale-field">
+        <span class="sr-only">{{ i18n.translate('language.change') }}</span>
+        <select [value]="i18n.locale()" (change)="changeLocale($event)">
+          @for (option of localeOptions; track option.locale) {
+            <option [value]="option.locale">{{ option.flag }} {{ option.nativeName }}</option>
+          }
+        </select>
+      </label>
+
+      <button class="sign-out-button" type="button" (click)="signOut()">
+        <app-icon name="log-out" />
+        <span>{{ i18n.translate('auth.signOut') }}</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="owner-main" id="main-content">
+    <router-outlet />
+  </main>
+</div>

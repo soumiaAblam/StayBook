@@ -1,0 +1,34 @@
+<main class="language-page">
+  <section class="language-card" aria-labelledby="language-heading">
+    <img
+      class="language-logo"
+      src="/assets/brand/staybook-logo-slogan.svg"
+      alt="StayBook"
+      width="970"
+      height="260"
+    />
+
+    <h1 id="language-heading">{{ i18n.translate('language.title') }}</h1>
+
+    <div class="language-options" role="group" [attr.aria-label]="i18n.translate('language.title')">
+      @for (option of localeOptions; track option.locale) {
+        <button
+          class="language-option"
+          type="button"
+          [class.language-option-selected]="i18n.locale() === option.locale"
+          [attr.aria-pressed]="i18n.locale() === option.locale"
+          (click)="selectLocale(option.locale)"
+        >
+          <span class="language-flag" aria-hidden="true">{{ option.flag }}</span>
+          <span>{{ option.nativeName }}</span>
+          <span class="language-check" aria-hidden="true">✓</span>
+        </button>
+      }
+    </div>
+
+    <button class="continue-button" type="button" (click)="continue()">
+      {{ i18n.translate('language.continue') }}
+      <span aria-hidden="true">→</span>
+    </button>
+  </section>
+</main>

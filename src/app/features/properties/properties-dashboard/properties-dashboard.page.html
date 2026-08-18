@@ -1,0 +1,131 @@
+<section class="owner-workspace properties-page" aria-labelledby="properties-title">
+  <header class="properties-header">
+    <h1 class="properties-title" id="properties-title">
+      {{ i18n.translate('properties.title') }}
+    </h1>
+
+    <a class="button button--primary button--large add-property-button" routerLink="new">
+      <app-icon name="plus" />
+      <span>{{ i18n.translate('properties.add') }}</span>
+    </a>
+  </header>
+
+  @if (loadFailed()) {
+    <div class="alert alert--error" role="alert">
+      <app-icon name="alert-circle" />
+      <span>{{ i18n.translate('error.generic') }}</span>
+    </div>
+  } @else if (cards().length === 0) {
+    <section class="empty-property-state" aria-labelledby="empty-properties-title">
+      <div class="desert-illustration" aria-hidden="true">
+        <span class="desert-sun"></span>
+        <span class="desert-dune desert-dune--back"></span>
+        <span class="desert-dune desert-dune--front"></span>
+        <span class="desert-cactus desert-cactus--small"></span>
+        <span class="desert-cactus desert-cactus--large"></span>
+        <span class="desert-tumbleweed"></span>
+      </div>
+
+      <div class="empty-property-content">
+        <h2 class="empty-property-title" id="empty-properties-title">
+          {{ i18n.translate('properties.empty') }}
+        </h2>
+        <a class="button button--primary button--large empty-add-button" routerLink="new">
+          <app-icon name="plus" />
+          <span>{{ i18n.translate('properties.addFirst') }}</span>
+        </a>
+      </div>
+    </section>
+  } @else {
+    <div class="property-list" aria-live="polite">
+      @for (card of cards(); track card.property.id) {
+        <article
+          class="property-card"
+          [class.property-card--ready]="card.status === 'ready'"
+          [class.property-card--attention]="card.status === 'attention'"
+          data-testid="property-card"
+        >
+          <div class="property-visual">
+            @if (card.property.overview.coverImage; as coverImage) {
+              <img [src]="coverImage.dataUrl" [alt]="coverImage.altText" width="720" height="360" />
+            } @else {
+              <div class="property-placeholder" aria-hidden="true">
+                <span class="property-placeholder__sun"></span>
+                <span class="property-placeholder__building">
+                  <app-icon name="building" />
+                </span>
+              </div>
+            }
+          </div>
+
+          <div class="property-card__content">
+            <div class="property-card__heading">
+              <div class="property-card__identity">
+                <span
+                  class="property-status"
+                  [class.property-status--ready]="card.status === 'ready'"
+                  [class.property-status--attention]="card.status === 'attention'"
+                >
+                  {{ statusLabel(card.status) }}
+                </span>
+                <h2>{{ propertyName(card.property) }}</h2>
+                @if (card.property.overview.cityOrArea) {
+                  <p>
+                    <app-icon name="map-pin" />
+                    <span>{{ card.property.overview.cityOrArea }}</span>
+                  </p>
+                }
+              </div>
+
+              <strong class="completion-value">
+                {{
+                  i18n.translate('properties.completion', {
+                    value: card.completion.percentage,
+                  })
+                }}
+              </strong>
+            </div>
+
+            <div
+              class="progress"
+              role="progressbar"
+              [attr.aria-label]="
+                i18n.translate('properties.completion', {
+                  value: card.completion.percentage,
+                })
+              "
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-valuenow]="card.completion.percentage"
+            >
+              <span
+                class="progress__value"
+                [style.inline-size.%]="card.completion.percentage"
+              ></span>
+            </div>
+
+            <div class="property-card__actions">
+              <a
+                class="button button--secondary"
+                [routerLink]="['/owner/properties', card.property.id, 'edit', 'overview']"
+              >
+                <app-icon name="edit" />
+                <span>
+                  {{
+                    i18n.translate(
+                      card.completion.complete ? 'properties.edit' : 'properties.continue'
+                    )
+                  }}
+                </span>
+              </a>
+              <a class="button button--quiet" [routerLink]="['/guide', card.property.id]">
+                <app-icon name="eye" />
+                <span>{{ i18n.translate('properties.preview') }}</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

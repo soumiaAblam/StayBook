@@ -1,0 +1,80 @@
+<div class="account-canvas">
+  <section class="owner-workspace account-workspace" aria-labelledby="account-heading">
+    <header class="account-header">
+      <div>
+        <p class="page-eyebrow">StayBook</p>
+        <h1 id="account-heading" class="page-title">{{ i18n.translate('account.title') }}</h1>
+      </div>
+    </header>
+
+    @if (error()) {
+      <p class="alert alert--error" role="alert">{{ i18n.translate('error.storage') }}</p>
+    }
+
+    @if (saved()) {
+      <p class="alert alert--success" role="status">{{ i18n.translate('status.saved') }}</p>
+    }
+
+    <form class="form account-form" [formGroup]="form" (ngSubmit)="save()">
+      <fieldset class="form-section">
+        <legend>{{ i18n.translate('account.profile') }}</legend>
+        <p class="section-hint">{{ i18n.translate('account.profileHint') }}</p>
+
+        <div class="form-grid form-grid--two">
+          <div class="field">
+            <label for="account-name">{{ i18n.translate('auth.name') }}</label>
+            <input
+              id="account-name"
+              formControlName="displayName"
+              autocomplete="name"
+              [placeholder]="i18n.translate('auth.name.placeholder')"
+            />
+          </div>
+
+          <div class="field">
+            <label for="account-email">{{ i18n.translate('account.contactEmail') }}</label>
+            <input
+              id="account-email"
+              type="email"
+              inputmode="email"
+              formControlName="contactEmail"
+              autocomplete="email"
+              [placeholder]="i18n.translate('auth.email.placeholder')"
+            />
+          </div>
+
+          <div class="field">
+            <label for="account-phone">{{ i18n.translate('account.contactPhone') }}</label>
+            <input
+              id="account-phone"
+              type="tel"
+              inputmode="tel"
+              formControlName="contactPhone"
+              autocomplete="tel"
+              [placeholder]="i18n.translate('account.contactPhone.placeholder')"
+            />
+          </div>
+
+          <div class="field">
+            <label for="account-locale">{{ i18n.translate('account.language') }}</label>
+            <select id="account-locale" formControlName="locale">
+              @for (option of localeOptions; track option.locale) {
+                <option [value]="option.locale">{{ option.flag }} {{ option.nativeName }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button
+          class="button button--primary button--large"
+          type="submit"
+          [disabled]="form.disabled"
+        >
+          {{ i18n.translate('common.save') }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
