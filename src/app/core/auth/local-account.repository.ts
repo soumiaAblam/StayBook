@@ -15,6 +15,7 @@ import {
   type LocalAccountCollection,
 } from './auth-validation';
 
+// Accounts persist across browser restarts in the local demo, so we cap the collection instead of letting it grow forever.
 const ACCOUNTS_MAXIMUM_BYTES = 256 * 1024;
 
 @Injectable({ providedIn: 'root' })
@@ -87,6 +88,7 @@ export class LocalAccountRepository {
     return this.adapter.write({ accounts: [...accountsResult.value, account] });
   }
 
+  // Replacing filters by both id and normalized email so we do not keep a stale duplicate under either key.
   replace(account: LocalAccount): StorageResult<void> {
     if (!isLocalAccount(account)) {
       return storageFailure('invalid-data', STORAGE_KEYS.accounts);

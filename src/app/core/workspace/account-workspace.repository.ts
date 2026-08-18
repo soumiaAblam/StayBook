@@ -71,6 +71,7 @@ export class AccountWorkspaceRepository {
     { maximumBytes: FIXTURE_STATE_MAXIMUM_BYTES },
   );
 
+  // Reading the owner workspace also refreshes the lightweight guest-preview cache used by guest routes in the same browser origin.
   read(): StorageResult<AccountWorkspace | null> {
     const contextResult = this.currentContext();
 
@@ -250,6 +251,7 @@ export class AccountWorkspaceRepository {
     return saveResult;
   }
 
+  // The fixture account is seeded once per browser session. Regular user-created accounts intentionally start empty.
   seedFixtureForCurrentAccount(now = new Date()): StorageResult<FixtureSeedOutcome> {
     const contextResult = this.currentContext();
 
@@ -335,6 +337,7 @@ export class AccountWorkspaceRepository {
     return storageSuccess(null);
   }
 
+  // Guest routes fall back to this cache because they are keyed by property id and can be revisited after the owner flow moved on.
   private readGuestPreview(propertyId: PropertyId): StorageResult<Property | null> {
     if (!this.localStorage) {
       return storageSuccess(null);
@@ -381,6 +384,7 @@ export class AccountWorkspaceRepository {
     }
   }
 
+  // Every workspace operation is scoped to the account currently authenticated in sessionStorage.
   private currentContext(): StorageResult<CurrentWorkspaceContext> {
     const sessionResult = this.authSessionRepository.read();
 

@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
 import type { PropertyCoverImage } from '../../domain/property';
 
+// Property images are persisted inside browser storage, so we keep both the accepted formats and the final payload size deliberately tight.
 export const allowedPropertyImageTypes = ['image/jpeg', 'image/png', 'image/webp'] as const;
 export type AllowedPropertyImageType = (typeof allowedPropertyImageTypes)[number];
 
@@ -23,6 +24,7 @@ export class PropertyImageError extends Error {
   }
 }
 
+// We check the real file signature as well as file.type because the browser-reported MIME type is easy to spoof.
 export function hasValidImageSignature(
   bytes: Uint8Array,
   mimeType: AllowedPropertyImageType,
@@ -87,6 +89,7 @@ export class PropertyImageService {
       let height = Math.max(1, Math.round(bitmap.height * scale));
       let quality = 0.84;
 
+      // The upload is normalized to a smaller WebP before saving so previews do not exhaust the sessionStorage budget.
       for (let attempt = 0; attempt < 5; attempt += 1) {
         const blob = await this.renderWebp(bitmap, width, height, quality);
         if (blob.size <= maximumPropertyImageOutputBytes) {
@@ -108,6 +111,7 @@ export class PropertyImageService {
     }
   }
 
+  // Canvas export gives us one consistent output format no matter which allowed image format the user picked.
   private async renderWebp(
     bitmap: ImageBitmap,
     width: number,

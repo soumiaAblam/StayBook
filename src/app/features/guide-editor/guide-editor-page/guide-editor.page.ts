@@ -404,6 +404,7 @@ export class GuideEditorPage {
     );
   }
 
+  // The page delegates all file validation and normalization to PropertyImageService so the form only deals with a ready-to-save cover image.
   async selectCoverImage(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.item(0);
@@ -519,6 +520,7 @@ export class GuideEditorPage {
     this.loading.set(false);
   }
 
+  // We always repopulate every section from the canonical Property object so derived form state cannot drift after navigation or save.
   private populateForms(property: Property): void {
     this.overviewForm.reset({
       name: property.overview.name,
