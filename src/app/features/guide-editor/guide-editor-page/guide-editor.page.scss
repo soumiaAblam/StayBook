@@ -126,6 +126,22 @@
   padding-block-start: var(--space-2);
 }
 
+.cover-image-field {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.cover-image-preview {
+  width: min(100%, 30rem);
+  max-height: 16rem;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+.image-picker {
+  width: fit-content;
+}
+
 .field--wide {
   grid-column: 1 / -1;
 }

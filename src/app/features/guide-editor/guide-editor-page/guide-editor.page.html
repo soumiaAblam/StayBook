@@ -127,6 +127,56 @@
                     <small class="field-error">{{ i18n.translate('validation.required') }}</small>
                   }
                 </label>
+
+                <fieldset class="form-card field--wide cover-image-field">
+                  <legend>{{ i18n.translate('editor.coverImage') }}</legend>
+                  <p class="field-hint">{{ i18n.translate('editor.coverImageHint') }}</p>
+
+                  @if (coverImage(); as image) {
+                    <img class="cover-image-preview" [src]="image.dataUrl" [alt]="image.altText" />
+                    <button
+                      class="button button--danger"
+                      type="button"
+                      (click)="removeCoverImage()"
+                    >
+                      <app-icon name="trash" />
+                      {{ i18n.translate('editor.removeImage') }}
+                    </button>
+                  }
+
+                  <label class="field">
+                    <span>{{ i18n.translate('editor.coverAltText') }}</span>
+                    <input
+                      formControlName="coverAltText"
+                      maxlength="240"
+                      [placeholder]="i18n.translate('editor.coverAltText.placeholder')"
+                    />
+                  </label>
+
+                  <label class="button button--secondary image-picker">
+                    <app-icon name="image" />
+                    <span>
+                      {{
+                        imageProcessing()
+                          ? i18n.translate('editor.imageProcessing')
+                          : i18n.translate('editor.chooseImage')
+                      }}
+                    </span>
+                    <input
+                      class="sr-only"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      [disabled]="imageProcessing()"
+                      (change)="selectCoverImage($event)"
+                    />
+                  </label>
+
+                  @if (imageError()) {
+                    <p class="field-error" role="alert">
+                      {{ i18n.translate('editor.imageError') }}
+                    </p>
+                  }
+                </fieldset>
               </div>
               <ng-container *ngTemplateOutlet="formActions" />
             </form>

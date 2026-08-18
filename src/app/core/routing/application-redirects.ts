@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, RedirectFunction, Router } from '@angular/router';
 import { AuthSessionRepository } from '../auth';
-import { localeStorageKey } from '../i18n/locale';
+import { isSupportedLocale, localeStorageKey } from '../i18n/locale';
 import { LOCAL_STORAGE } from '../storage';
 
 export const applicationRootRedirect: RedirectFunction = () => {
@@ -16,7 +16,7 @@ export const applicationRootRedirect: RedirectFunction = () => {
   let hasSelectedLocale: boolean;
 
   try {
-    hasSelectedLocale = localStorage?.getItem(localeStorageKey) !== null;
+    hasSelectedLocale = isSupportedLocale(localStorage?.getItem(localeStorageKey));
   } catch {
     hasSelectedLocale = false;
   }
