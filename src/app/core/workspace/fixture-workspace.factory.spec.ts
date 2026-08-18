@@ -22,11 +22,17 @@ describe('createFixtureWorkspace', () => {
     expect(completion[1]?.percentage).toBeGreaterThan(completion[2]?.percentage ?? 100);
   });
 
-  it('contains no Wi-Fi credentials or access codes', () => {
+  it('contains no real Wi-Fi credentials or access codes', () => {
     const workspace = createFixtureWorkspace();
+    const completeProperty = workspace.properties[0];
+    expect(completeProperty).toBeDefined();
+    expect(completeProperty?.homeEssentials.wifi).toMatchObject({
+      networkName: 'CasaOlmo Guest',
+      password: '',
+      instructions: '',
+    });
 
     for (const property of workspace.properties) {
-      expect(property.homeEssentials.wifi).toBeNull();
       expect(property.arrivalAccess.homeAccess.doorCode).toBe('');
       expect(property.arrivalAccess.homeAccess.lockboxCode).toBe('');
       expect(property.ownerAccountId).toBe(FIXTURE_ACCOUNT_ID);

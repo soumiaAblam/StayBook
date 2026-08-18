@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { I18nService } from '../../core/i18n/i18n.service';
-import { localeOptions, SupportedLocale } from '../../core/i18n/locale';
 import { AccountWorkspaceRepository } from '../../core/workspace';
 
 @Component({
@@ -17,14 +16,12 @@ export class AccountSettingsPage {
   private accountId = '';
 
   readonly i18n = inject(I18nService);
-  readonly localeOptions = localeOptions;
   readonly saved = signal(false);
   readonly error = signal(false);
   readonly form = this.formBuilder.group({
     displayName: ['', [Validators.required, Validators.maxLength(120)]],
     contactEmail: ['', [Validators.email, Validators.maxLength(254)]],
     contactPhone: ['', [Validators.maxLength(40)]],
-    locale: this.formBuilder.control<SupportedLocale>(this.i18n.locale()),
   });
 
   constructor() {
@@ -41,7 +38,6 @@ export class AccountSettingsPage {
       displayName: profile.displayName,
       contactEmail: profile.contactEmail,
       contactPhone: profile.contactPhone,
-      locale: this.i18n.locale(),
     });
   }
 
@@ -67,7 +63,6 @@ export class AccountSettingsPage {
       return;
     }
 
-    this.i18n.setLocale(value.locale);
     this.saved.set(true);
   }
 }

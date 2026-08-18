@@ -82,7 +82,6 @@ export class GuideReviewPage {
     const exactKeys: Readonly<Record<string, TranslationKey>> = {
       'overview.name': 'editor.propertyName',
       'overview.cityOrArea': 'editor.city',
-      'overview.welcomeMessage': 'editor.welcomeMessage',
       'arrivalAccess.checkInTime': 'editor.checkInTime',
       'arrivalAccess.location.writtenAddress': 'editor.homeAddress',
       'arrivalAccess.homeAccess.instructions': 'editor.accessInstructions',

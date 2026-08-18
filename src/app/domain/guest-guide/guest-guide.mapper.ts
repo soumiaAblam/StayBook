@@ -298,7 +298,6 @@ export class GuestGuideMapper {
       propertyName: property.overview.name,
       propertyType: property.overview.propertyType,
       cityOrArea: property.overview.cityOrArea,
-      welcomeMessage: property.overview.welcomeMessage,
       ...(property.overview.coverImage === null
         ? {}
         : { coverImageDataUrl: property.overview.coverImage.dataUrl }),

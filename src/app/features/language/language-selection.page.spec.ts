@@ -1,5 +1,6 @@
 import { provideRouter, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { localeStorageKey } from '../../core/i18n/locale';
 import { LanguageSelectionPage } from './language-selection.page';
 
@@ -8,7 +9,23 @@ describe('LanguageSelectionPage', () => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [LanguageSelectionPage],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        {
+          provide: TranslateService,
+          useValue: {
+            addLangs: vi.fn(),
+            setTranslation: vi.fn(),
+            setFallbackLang: vi.fn(),
+            use: vi.fn(),
+            instant: (key: string) =>
+              ({
+                'language.title': 'Choisissez votre langue',
+                'language.continue': 'Continue',
+              }[key] ?? key),
+          },
+        },
+      ],
     }).compileComponents();
   });
 

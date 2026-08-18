@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountWorkspaceRepository } from '../../core/workspace';
+import { createTranslateServiceStub } from '../../testing/translate-service.stub';
 import { AccountSettingsPage } from './account-settings.page';
 
 describe('AccountSettingsPage', () => {
@@ -29,6 +31,7 @@ describe('AccountSettingsPage', () => {
             updateProfile,
           },
         },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
       ],
     }).compileComponents();
   });

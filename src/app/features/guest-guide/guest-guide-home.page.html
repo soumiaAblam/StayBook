@@ -24,10 +24,6 @@
       </div>
     </section>
 
-    @if (guide.welcomeMessage) {
-      <p class="guest-welcome-message">{{ guide.welcomeMessage }}</p>
-    }
-
     @if (formatDate(guide.lastReviewedAt); as reviewedDate) {
       <p class="guest-reviewed">
         <app-icon name="check" />
@@ -35,13 +31,12 @@
       </p>
     }
 
-    <section class="guest-section" aria-labelledby="before-arrival-title">
+    <section class="guest-section" aria-labelledby="before-you-arrive-title">
       <div class="guest-section-heading">
-        <h2 id="before-arrival-title">{{ i18n.translate('guest.essentialsNow') }}</h2>
-        <span>{{ i18n.translate('guest.startHere') }}</span>
+        <h2 id="before-you-arrive-title">{{ i18n.translate('guest.beforeArrival') }}</h2>
       </div>
       <div class="essential-grid">
-        @for (card of essentialCards; track card.label) {
+        @for (card of beforeArrivalCards; track card.path) {
           <a class="essential-card tone-{{ card.tone }}" [routerLink]="card.path">
             <span class="guest-card-icon"><app-icon [name]="card.icon" /></span>
             <strong>{{ i18n.translate(card.label) }}</strong>
@@ -53,12 +48,13 @@
       </div>
     </section>
 
-    <section class="guest-section" aria-labelledby="before-you-arrive-title">
+    <section class="guest-section" aria-labelledby="before-arrival-title">
       <div class="guest-section-heading">
-        <h2 id="before-you-arrive-title">{{ i18n.translate('guest.beforeArrival') }}</h2>
+        <h2 id="before-arrival-title">{{ i18n.translate('guest.essentialsNow') }}</h2>
+        <span>{{ i18n.translate('guest.startHere') }}</span>
       </div>
       <div class="essential-grid">
-        @for (card of beforeArrivalCards; track card.path) {
+        @for (card of essentialCards; track card.label) {
           <a class="essential-card tone-{{ card.tone }}" [routerLink]="card.path">
             <span class="guest-card-icon"><app-icon [name]="card.icon" /></span>
             <strong>{{ i18n.translate(card.label) }}</strong>

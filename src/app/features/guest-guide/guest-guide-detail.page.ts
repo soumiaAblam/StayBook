@@ -65,7 +65,7 @@ export class GuestGuideDetailPage {
   protected readonly kind = this.route.snapshot.data['kind'] as GuestGuideDetailKind;
   protected readonly presentation = PRESENTATIONS[this.kind];
   protected readonly accessRevealed = signal(false);
-  protected readonly wifiPasswordRevealed = signal(false);
+  protected readonly locationPreviewOpen = signal(false);
   protected readonly checkedItems = signal<ReadonlySet<string>>(new Set());
   protected readonly mapLocation = computed<ParsedMapLocation | null>(() => {
     const detail = this.detail();
@@ -81,14 +81,6 @@ export class GuestGuideDetailPage {
   });
 
   protected readonly detail = computed<GuestGuideDetailDto | null>(() => {
-    if (this.kind === 'check-in') {
-      const checkIn = this.facade.detail('check-in');
-      return (
-        checkIn ??
-        (this.facade.detail('home-access')?.kind === 'home-access' ? { kind: 'check-in' } : null)
-      );
-    }
-
     if (this.kind === 'local-guide') {
       const localGuide = this.facade.detail('local-guide');
       return (
@@ -114,16 +106,12 @@ export class GuestGuideDetailPage {
     }
   }
 
-  protected homeAccess() {
-    return this.kind === 'check-in' ? this.facade.detail('home-access') : null;
-  }
-
   protected toggleAccess(): void {
     this.accessRevealed.update((value) => !value);
   }
 
-  protected toggleWifiPassword(): void {
-    this.wifiPasswordRevealed.update((value) => !value);
+  protected toggleLocationPreview(): void {
+    this.locationPreviewOpen.update((value) => !value);
   }
 
   protected toggleChecklistItem(itemId: string): void {

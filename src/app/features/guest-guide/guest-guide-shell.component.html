@@ -22,7 +22,9 @@
       <span class="sr-only">{{ i18n.translate('language.change') }}</span>
       <select [value]="i18n.locale()" (change)="changeLocale($event)">
         @for (option of localeOptions; track option.locale) {
-          <option [value]="option.locale">{{ option.documentLanguage.toUpperCase() }}</option>
+          <option [value]="option.locale" [selected]="i18n.locale() === option.locale">
+            {{ option.documentLanguage.toUpperCase() }}
+          </option>
         }
       </select>
     </label>

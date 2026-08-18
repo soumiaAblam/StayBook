@@ -52,6 +52,20 @@ describe('LocalAccountRepository', () => {
     expect(localStorage.getItem(STORAGE_KEYS.accounts)).toContain('demo-password-2');
   });
 
+  it('replaces a stale account when the fixture identity changes', () => {
+    expect(repository.add({ ...account, email: 'old-demo@example.com', id: 'account-old' }).ok).toBe(
+      true,
+    );
+    expect(repository.replace({ ...account, id: 'account-old', email: 'demo@demo.com' })).toEqual({
+      ok: true,
+      value: undefined,
+    });
+    expect(repository.findById('account-old')).toEqual({
+      ok: true,
+      value: { ...account, id: 'account-old', email: 'demo@demo.com' },
+    });
+  });
+
   it('does not replace a corrupt account collection with an empty one', () => {
     localStorage.setItem(STORAGE_KEYS.accounts, '{corrupt');
 

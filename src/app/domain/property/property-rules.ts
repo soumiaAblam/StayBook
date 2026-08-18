@@ -164,7 +164,6 @@ export function validateProperty(property: Property): readonly PropertyValidatio
   for (const [field, value] of [
     ['name', property.overview.name],
     ['cityOrArea', property.overview.cityOrArea],
-    ['welcomeMessage', property.overview.welcomeMessage],
   ] as const) {
     if (isBlank(value)) {
       addIssue(issues, 'property-field-required', 'overview', `overview.${field}`);

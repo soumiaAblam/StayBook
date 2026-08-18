@@ -17,6 +17,8 @@ export const STORAGE_KEYS = {
   fixtureState: `${STORAGE_NAMESPACE}:fixture-state`,
   workspace: (accountId: string): string =>
     `${STORAGE_NAMESPACE}:workspace:${requireStorageSegment(accountId, 'Account ID')}`,
+  guestPreview: (propertyId: string): string =>
+    `${STORAGE_NAMESPACE}:guest-preview:${requireStorageSegment(propertyId, 'Property ID')}`,
   guestChecklist: (propertyId: string): string =>
     `${STORAGE_NAMESPACE}:guest-checklist:${requireStorageSegment(propertyId, 'Property ID')}`,
 } as const;

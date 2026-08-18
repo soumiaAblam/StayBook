@@ -28,18 +28,42 @@ export class GuestGuideHomePage {
   protected readonly copy = inject(GuestCopyService);
 
   protected readonly beforeArrivalCards: readonly GuestHomeCard[] = [
-    { label: 'guest.checkIn', path: 'check-in', icon: 'door', tone: 'blue' },
-    { label: 'guest.homeAddress', path: 'home-address', icon: 'map-pin', tone: 'purple' },
-    { label: 'guest.luggage', path: 'luggage', icon: 'luggage', tone: 'yellow' },
-    { label: 'guest.parking', path: 'parking', icon: 'parking', tone: 'blue' },
-  ];
-
-  protected readonly essentialCards: readonly GuestHomeCard[] = [
     {
       label: 'guest.checkIn',
       hint: 'guest.card.arrivalHint',
       path: 'check-in',
       icon: 'door',
+      tone: 'blue',
+    },
+    {
+      label: 'guest.homeAddress',
+      hint: 'guest.card.addressHint',
+      path: 'home-address',
+      icon: 'map-pin',
+      tone: 'purple',
+    },
+    {
+      label: 'guest.luggage',
+      hint: 'guest.card.luggageHint',
+      path: 'luggage',
+      icon: 'luggage',
+      tone: 'yellow',
+    },
+    {
+      label: 'guest.parking',
+      hint: 'guest.card.parkingHint',
+      path: 'parking',
+      icon: 'parking',
+      tone: 'pink',
+    },
+  ];
+
+  protected readonly essentialCards: readonly GuestHomeCard[] = [
+    {
+      label: 'guest.homeAccess',
+      hint: 'guest.card.accessHint',
+      path: 'home-access',
+      icon: 'key',
       tone: 'blue',
     },
     {
@@ -59,10 +83,27 @@ export class GuestGuideHomePage {
   ];
 
   protected readonly duringStayCards: readonly GuestHomeCard[] = [
-    { label: 'guest.homeAccess', path: 'check-in', icon: 'key', tone: 'green' },
-    { label: 'guest.homeCare', path: 'home-care', icon: 'home-care', tone: 'yellow' },
-    { label: 'guest.houseRules', path: 'house-rules', icon: 'list', tone: 'green' },
-    { label: 'guest.extras', path: 'extras', icon: 'sparkles', tone: 'pink' },
+    {
+      label: 'guest.homeCare',
+      hint: 'guest.card.homeCareHint',
+      path: 'home-care',
+      icon: 'home-care',
+      tone: 'yellow',
+    },
+    {
+      label: 'guest.houseRules',
+      hint: 'guest.card.rulesHint',
+      path: 'house-rules',
+      icon: 'list',
+      tone: 'green',
+    },
+    {
+      label: 'guest.extras',
+      hint: 'guest.card.extrasHint',
+      path: 'extras',
+      icon: 'sparkles',
+      tone: 'pink',
+    },
   ];
 
   protected formatDate(value: string): string {

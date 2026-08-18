@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountWorkspaceRepository, createFixtureWorkspace } from '../../../core/workspace';
 import { storageSuccess } from '../../../core/storage';
 import type { Property } from '../../../domain/property';
+import { createTranslateServiceStub } from '../../../testing/translate-service.stub';
 import { PropertiesDashboardPage } from './properties-dashboard.page';
 
 describe('PropertiesDashboardPage', () => {
@@ -16,7 +18,11 @@ describe('PropertiesDashboardPage', () => {
 
     await TestBed.configureTestingModule({
       imports: [PropertiesDashboardPage],
-      providers: [provideRouter([]), { provide: AccountWorkspaceRepository, useValue: repository }],
+      providers: [
+        provideRouter([]),
+        { provide: AccountWorkspaceRepository, useValue: repository },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
+      ],
     }).compileComponents();
   });
 

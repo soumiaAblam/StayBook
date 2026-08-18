@@ -1,8 +1,10 @@
 import { provideRouter, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { LocalAuthService } from '../../../core/auth';
 import { SignInPage } from './sign-in.page';
 import { WorkspaceSessionCoordinator } from '../../../core/workspace';
+import { createTranslateServiceStub } from '../../../testing/translate-service.stub';
 
 describe('SignInPage', () => {
   const signIn = vi.fn();
@@ -25,6 +27,7 @@ describe('SignInPage', () => {
           provide: WorkspaceSessionCoordinator,
           useValue: { prepare },
         },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
       ],
     }).compileComponents();
   });

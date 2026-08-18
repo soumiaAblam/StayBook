@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { provideRouter, Router } from '@angular/router';
 import { AuthSessionRepository, WEB_CRYPTO } from '../../../core/auth';
 import { storageSuccess } from '../../../core/storage';
 import { AccountWorkspaceRepository } from '../../../core/workspace';
 import type { Property } from '../../../domain/property';
+import { createTranslateServiceStub } from '../../../testing/translate-service.stub';
 import { NewPropertyPage } from './new-property.page';
 
 describe('NewPropertyPage', () => {
@@ -33,6 +35,7 @@ describe('NewPropertyPage', () => {
         { provide: AuthSessionRepository, useValue: authSessionRepository },
         { provide: AccountWorkspaceRepository, useValue: workspaceRepository },
         { provide: WEB_CRYPTO, useValue: cryptoProvider },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
       ],
     }).compileComponents();
     const router = TestBed.inject(Router);

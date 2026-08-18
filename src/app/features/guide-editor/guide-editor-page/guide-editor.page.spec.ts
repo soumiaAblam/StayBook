@@ -1,8 +1,10 @@
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AccountWorkspaceRepository, createDefaultProperty } from '../../../core/workspace';
 import type { AccountWorkspace } from '../../../core/workspace';
+import { createTranslateServiceStub } from '../../../testing/translate-service.stub';
 import { GuideEditorPage } from './guide-editor.page';
 
 describe('GuideEditorPage', () => {
@@ -51,6 +53,7 @@ describe('GuideEditorPage', () => {
             upsertProperty,
           },
         },
+        { provide: TranslateService, useValue: createTranslateServiceStub() },
       ],
     }).compileComponents();
   });

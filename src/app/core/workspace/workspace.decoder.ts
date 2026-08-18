@@ -43,6 +43,7 @@ export const WORKSPACE_LIMITS = {
 
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
 const IMAGE_DATA_URL_PATTERN = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+const IMAGE_ASSET_PATH_PATTERN = /^\/assets\/[A-Za-z0-9._/-]+\.(?:jpe?g|png|webp)$/i;
 
 function isExactRecord(value: unknown, keys: readonly string[]): value is Record<string, unknown> {
   return isRecord(value) && hasExactlyKeys(value, keys);
@@ -69,6 +70,16 @@ function isNullableImageDataUrl(value: unknown): value is string | null {
     (isBoundedString(value, 1, WORKSPACE_LIMITS.maximumImageDataUrlLength) &&
       IMAGE_DATA_URL_PATTERN.test(value))
   );
+}
+
+function isMimeTypeCompatibleWithAssetPath(path: string, mimeType: string): boolean {
+  if (mimeType === 'image/jpeg') {
+    return /\.(?:jpe?g)$/i.test(path);
+  }
+  if (mimeType === 'image/png') {
+    return /\.png$/i.test(path);
+  }
+  return /\.webp$/i.test(path);
 }
 
 function isOptionalExtra(value: unknown): value is OptionalExtra {
@@ -293,13 +304,19 @@ function isPropertyCoverImage(value: unknown): value is PropertyCoverImage {
     !isExactRecord(value, ['dataUrl', 'mimeType', 'altText']) ||
     !isOneOf(value['mimeType'], ['image/jpeg', 'image/png', 'image/webp']) ||
     !isBoundedString(value['dataUrl'], 1, WORKSPACE_LIMITS.maximumImageDataUrlLength) ||
-    !IMAGE_DATA_URL_PATTERN.test(value['dataUrl']) ||
     !isText(value['altText'], WORKSPACE_LIMITS.maximumShortTextLength)
   ) {
     return false;
   }
 
-  return value['dataUrl'].startsWith(`data:${value['mimeType']};base64,`);
+  if (IMAGE_DATA_URL_PATTERN.test(value['dataUrl'])) {
+    return value['dataUrl'].startsWith(`data:${value['mimeType']};base64,`);
+  }
+
+  return (
+    IMAGE_ASSET_PATH_PATTERN.test(value['dataUrl']) &&
+    isMimeTypeCompatibleWithAssetPath(value['dataUrl'], value['mimeType'])
+  );
 }
 
 function isPropertyOverview(value: unknown): value is PropertyOverview {
