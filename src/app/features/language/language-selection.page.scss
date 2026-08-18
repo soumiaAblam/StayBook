@@ -1,78 +1,107 @@
 :host {
   display: block;
-  min-height: 100%;
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
 }
 
 .language-page {
+  position: relative;
+  overflow: hidden;
   display: grid;
-  min-height: 100dvh;
-  padding: 1rem;
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+  padding: clamp(1rem, 4vw, 2rem);
   place-items: center;
   background:
-    radial-gradient(circle at 14% 18%, rgb(3 210 110 / 14%) 0 5.5rem, transparent 5.6rem),
-    radial-gradient(circle at 88% 84%, rgb(255 58 114 / 13%) 0 7rem, transparent 7.1rem),
-    linear-gradient(145deg, #eaf4ff 0%, #f5f9ff 55%, #e9f5ff 100%);
+    radial-gradient(circle at 82% 12%, rgb(3 210 110 / 24%) 0, rgb(3 210 110 / 0%) 22%),
+    linear-gradient(145deg, #0a2142 0%, #105cb1 58%, #156fe7 100%);
+}
+
+.language-page::before,
+.language-page::after {
+  position: absolute;
+  border: 1.6rem solid rgb(255 255 255 / 12%);
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+.language-page::before {
+  inline-size: 23rem;
+  block-size: 23rem;
+  inset-block-start: -11rem;
+  inset-inline-start: -8rem;
+}
+
+.language-page::after {
+  inline-size: 18rem;
+  block-size: 18rem;
+  inset-inline-end: -7rem;
+  inset-block-end: -8rem;
+  border-color: rgb(3 210 110 / 25%);
 }
 
 .language-card {
+  position: relative;
+  z-index: 1;
   display: grid;
-  width: min(100%, 30rem);
-  padding: clamp(1.35rem, 5vw, 2.5rem);
-  border: 1px solid rgb(16 92 177 / 14%);
-  border-radius: 1.5rem;
+  width: min(26.875rem, calc(100% - 2rem));
+  padding: 1.875rem;
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 1.25rem;
   background: #fff;
-  box-shadow: 0 1.4rem 3.5rem rgb(7 59 125 / 16%);
+  box-shadow: 0 1.75rem 4.375rem rgb(4 29 68 / 30%);
+  text-align: center;
 }
 
 .language-logo {
   display: block;
-  width: min(100%, 15rem);
-  height: auto;
-  margin: 0 auto 1.55rem;
+  width: min(13.75rem, 100%);
+  margin: 0 auto 1.125rem;
 }
 
 h1 {
-  margin: 0 0 1.6rem;
-  color: #102a43;
+  margin: 0 0 1.625rem;
+  color: var(--color-navy);
   font-family: var(--font-display, 'Trebuchet MS', sans-serif);
-  font-size: clamp(1.35rem, 7.4vw, 2.25rem);
-  font-weight: 750;
-  letter-spacing: -0.045em;
-  line-height: 1.1;
-  text-align: center;
+  font-size: clamp(1.625rem, 8.2vw, 2.625rem);
+  font-weight: 640;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
   white-space: nowrap;
 }
 
 .language-options {
   display: grid;
-  gap: 0.6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
 .language-option {
   display: grid;
-  grid-template-columns: 2.35rem 1fr 1.25rem;
-  gap: 0.75rem;
+  grid-template-columns: 2.125rem minmax(0, 1fr) 1.25rem;
+  gap: 0.5625rem;
   align-items: center;
-  min-height: 4rem;
-  padding: 0.65rem 1rem;
+  min-height: 3.875rem;
+  padding: 0.625rem;
   border: 1px solid #d8e5f3;
-  border-radius: 0.9rem;
+  border-radius: 0.75rem;
   color: #17324d;
-  background: #f8fbff;
+  background: #fbfdff;
   font: inherit;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 760;
   text-align: left;
   cursor: pointer;
   transition:
     border-color 160ms ease,
-    background-color 160ms ease,
-    transform 160ms ease;
+    background-color 160ms ease;
 }
 
 .language-option:hover {
-  border-color: #8cbcf5;
-  background: #edf6ff;
-  transform: translateY(-1px);
+  border-color: var(--color-blue);
+  color: var(--color-blue-strong);
+  background: var(--color-blue-soft);
 }
 
 .language-option:focus-visible,
@@ -82,15 +111,24 @@ h1 {
 }
 
 .language-option-selected {
-  border-color: #156fe7;
-  background: #eaf4ff;
-  box-shadow: inset 0 0 0 1px #156fe7;
+  border-color: var(--color-blue);
+  color: var(--color-blue-strong);
+  background: var(--color-blue-soft);
+  box-shadow: 0 0.4375rem 1rem rgb(21 111 231 / 10%);
 }
 
 .language-flag {
+  display: grid;
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  border: 1px solid #dce7f2;
+  border-radius: 50%;
+  place-items: center;
+  background: var(--color-white);
   font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
-  font-size: 1.55rem;
+  font-size: 1.0625rem;
   line-height: 1;
+  box-shadow: 0 0.125rem 0.375rem rgb(21 67 118 / 8%);
 }
 
 .language-check {
@@ -104,37 +142,78 @@ h1 {
 
 .continue-button {
   display: flex;
-  gap: 0.75rem;
+  min-width: 11.25rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  min-height: 3.5rem;
-  margin-top: 1.35rem;
-  padding: 0.75rem 1.25rem;
+  min-height: 3.25rem;
+  margin: 1.125rem auto 0;
+  padding: 0.75rem 1.0625rem;
   border: 0;
-  border-radius: 0.9rem;
+  border-radius: 0.75rem;
   color: #fff;
-  background: #156fe7;
+  background: var(--color-blue);
   box-shadow: 0 0.75rem 1.5rem rgb(21 111 231 / 24%);
   font: inherit;
-  font-weight: 800;
+  font-size: 0.8125rem;
+  font-weight: 780;
   cursor: pointer;
 }
 
 .continue-button:hover {
-  background: #105cb1;
+  background: var(--color-blue-strong);
 }
 
-@media (max-width: 22rem) {
+@media (max-width: 42.5rem) {
   .language-page {
-    padding: 0.6rem;
+    min-block-size: 37.5rem;
   }
 
   .language-card {
-    padding-inline: 1rem;
+    width: min(25rem, calc(100% - 2rem));
+    padding: 1.8125rem;
   }
 
   h1 {
-    font-size: clamp(1.2rem, 7.2vw, 1.55rem);
+    font-size: 2.375rem;
+  }
+
+  .language-option {
+    min-height: 3.625rem;
+  }
+
+  .language-flag {
+    inline-size: 1.875rem;
+    block-size: 1.875rem;
+    font-size: 1.0625rem;
+  }
+}
+
+@media (max-width: 24.375rem) {
+  .language-card {
+    width: min(25rem, calc(100% - 2rem));
+    padding: 1.5rem 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+
+  .language-option {
+    min-height: 3.25rem;
+    gap: 0.5rem;
+  }
+
+  .language-flag {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 22rem) {
+  h1 {
+    font-size: 1.5rem;
   }
 }
 

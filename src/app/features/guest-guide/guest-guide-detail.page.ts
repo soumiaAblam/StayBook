@@ -2,6 +2,7 @@ import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
+import type { TranslationKey } from '../../core/i18n/catalogs';
 import type {
   GuestGuideDetailDto,
   GuestGuideDetailKind,
@@ -169,5 +170,27 @@ export class GuestGuideDetailPage {
     return Number.isNaN(date.getTime())
       ? ''
       : new Intl.DateTimeFormat(this.i18n.locale(), { dateStyle: 'medium' }).format(date);
+  }
+
+  protected sectionTitleKey(): TranslationKey {
+    switch (this.kind) {
+      case 'check-in':
+      case 'home-access':
+      case 'home-address':
+      case 'luggage':
+      case 'parking':
+        return 'guest.beforeArrival';
+      case 'internet':
+      case 'home-care':
+      case 'house-rules':
+      case 'extras':
+      case 'checkout':
+        return 'guest.duringStay';
+      case 'local-guide':
+      case 'transport':
+        return 'guest.explore';
+      case 'help':
+        return 'guest.getHelp';
+    }
   }
 }

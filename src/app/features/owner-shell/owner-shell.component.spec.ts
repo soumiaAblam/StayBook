@@ -12,9 +12,12 @@ describe('OwnerShellComponent', () => {
     const fixture = TestBed.createComponent(OwnerShellComponent);
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
+    const signOutButton = element.querySelector('.sign-out-button') as HTMLButtonElement | null;
 
     expect(element.querySelector('nav')).not.toBeNull();
     expect(element.textContent).toContain('Properties');
     expect(element.textContent).not.toContain('Notifications');
+    expect(signOutButton).not.toBeNull();
+    expect(signOutButton?.getAttribute('aria-label')).toBe('Sign out');
   });
 });

@@ -1,8 +1,6 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, RedirectFunction, Router } from '@angular/router';
 import { AuthSessionRepository } from '../auth';
-import { isSupportedLocale, localeStorageKey } from '../i18n/locale';
-import { LOCAL_STORAGE } from '../storage';
 
 export const applicationRootRedirect: RedirectFunction = () => {
   const router = inject(Router);
@@ -12,16 +10,7 @@ export const applicationRootRedirect: RedirectFunction = () => {
     return router.parseUrl('/owner/properties');
   }
 
-  const localStorage = inject(LOCAL_STORAGE);
-  let hasSelectedLocale: boolean;
-
-  try {
-    hasSelectedLocale = isSupportedLocale(localStorage?.getItem(localeStorageKey));
-  } catch {
-    hasSelectedLocale = false;
-  }
-
-  return router.parseUrl(hasSelectedLocale ? '/auth/sign-in' : '/choose-language');
+  return router.parseUrl('/choose-language');
 };
 
 export const ownerSessionGuard: CanMatchFn = () => {

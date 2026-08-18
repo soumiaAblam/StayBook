@@ -774,6 +774,7 @@ textarea.field-control {
 }
 
 .progress__value {
+  display: block;
   inline-size: var(--progress, 0%);
   block-size: 100%;
   border-radius: inherit;

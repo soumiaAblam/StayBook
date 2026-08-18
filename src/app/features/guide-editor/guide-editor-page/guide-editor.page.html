@@ -6,7 +6,7 @@
   <section class="owner-workspace editor-page">
     <header class="editor-header">
       <div class="editor-heading">
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <nav class="breadcrumbs" [attr.aria-label]="i18n.translate('common.breadcrumb')">
           <a routerLink="/owner/properties">{{ i18n.translate('nav.properties') }}</a>
           <span aria-hidden="true">/</span>
           <span>{{ currentProperty.overview.name || i18n.translate('properties.add') }}</span>
@@ -22,7 +22,7 @@
       </a>
     </header>
 
-    <div class="editor-progress" aria-label="Guide progress">
+    <div class="editor-progress" [attr.aria-label]="i18n.translate('editor.progress')">
       <div>
         <strong>{{ currentStep() }} / 7</strong>
         <span>{{ i18n.translate('nav.guideEditor') }}</span>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="editor-layout">
-      <nav class="step-navigation" aria-label="Guide setup steps">
+      <nav class="step-navigation" [attr.aria-label]="i18n.translate('editor.setupSteps')">
         @for (definition of sectionDefinitions; track definition.id) {
           <button
             type="button"
@@ -55,7 +55,9 @@
       </nav>
 
       <div class="step-workspace">
-        <p class="step-label">Step {{ currentStep() }} of 7</p>
+        <p class="step-label">
+          {{ i18n.translate('editor.stepCount', { current: currentStep(), total: 7 }) }}
+        </p>
 
         @switch (currentSection()) {
           @case ('overview') {
@@ -102,19 +104,21 @@
                 </label>
 
                 <label class="field">
-                  <span>Property type</span>
+                  <span>{{ i18n.translate('editor.propertyType') }}</span>
                   <select formControlName="propertyType">
-                    <option value="apartment">Apartment</option>
-                    <option value="house">House</option>
-                    <option value="room">Room</option>
+                    <option value="apartment">
+                      {{ i18n.translate('editor.propertyType.apartment') }}
+                    </option>
+                    <option value="house">{{ i18n.translate('editor.propertyType.house') }}</option>
+                    <option value="room">{{ i18n.translate('editor.propertyType.room') }}</option>
                   </select>
                 </label>
 
                 <label class="field field--wide">
-                  <span>Welcome message</span>
+                  <span>{{ i18n.translate('editor.welcomeMessage') }}</span>
                   <textarea
                     formControlName="welcomeMessage"
-                    placeholder="Write a short, welcoming message for guests."
+                    [placeholder]="i18n.translate('editor.welcomeMessage.placeholder')"
                     [attr.aria-invalid]="
                       overviewForm.controls.welcomeMessage.invalid &&
                       overviewForm.controls.welcomeMessage.touched
@@ -223,7 +227,7 @@
               </label>
 
               <fieldset class="form-card">
-                <legend>Getting here</legend>
+                <legend>{{ i18n.translate('editor.gettingHere') }}</legend>
                 <div class="form-grid form-grid--two">
                   <label class="field field--wide">
                     <span>{{ i18n.translate('editor.homeAddress') }}</span>
@@ -245,25 +249,31 @@
                     />
                   </label>
                   <label class="field field--wide">
-                    <span>Directions</span>
+                    <span>{{ i18n.translate('editor.directions') }}</span>
                     <textarea
                       formControlName="directions"
-                      placeholder="Explain the easiest route or useful landmarks."
+                      [placeholder]="i18n.translate('editor.directions.placeholder')"
                     ></textarea>
                   </label>
                 </div>
               </fieldset>
 
               <fieldset class="form-card">
-                <legend>Home access</legend>
+                <legend>{{ i18n.translate('editor.homeAccess') }}</legend>
                 <div class="form-grid form-grid--two">
                   <label class="field">
-                    <span>Access method</span>
+                    <span>{{ i18n.translate('editor.accessMethod') }}</span>
                     <select formControlName="accessMethod">
-                      <option value="door">Door</option>
-                      <option value="lockbox">Lockbox</option>
-                      <option value="meet-host">Meet the host</option>
-                      <option value="other">Other</option>
+                      <option value="door">{{ i18n.translate('editor.accessMethod.door') }}</option>
+                      <option value="lockbox">
+                        {{ i18n.translate('editor.accessMethod.lockbox') }}
+                      </option>
+                      <option value="meet-host">
+                        {{ i18n.translate('editor.accessMethod.meetHost') }}
+                      </option>
+                      <option value="other">
+                        {{ i18n.translate('editor.accessMethod.other') }}
+                      </option>
                     </select>
                   </label>
                   <label class="field field--wide">
@@ -305,12 +315,16 @@
               <fieldset class="form-card">
                 <legend>{{ i18n.translate('editor.parking') }}</legend>
                 <label class="field">
-                  <span>Parking option</span>
+                  <span>{{ i18n.translate('editor.parkingOption') }}</span>
                   <select formControlName="parkingKind">
                     <option value="none">{{ i18n.translate('editor.parking.none') }}</option>
                     <option value="on-site">{{ i18n.translate('editor.parking.onSite') }}</option>
-                    <option value="nearby-free">Nearby free parking</option>
-                    <option value="nearby-paid">Nearby paid parking</option>
+                    <option value="nearby-free">
+                      {{ i18n.translate('editor.parking.nearbyFree') }}
+                    </option>
+                    <option value="nearby-paid">
+                      {{ i18n.translate('editor.parking.nearbyPaid') }}
+                    </option>
                     <option value="ask-host">{{ i18n.translate('editor.parking.askHost') }}</option>
                   </select>
                 </label>
@@ -336,10 +350,10 @@
                       }
                     </label>
                     <label class="field">
-                      <span>Parking instructions</span>
+                      <span>{{ i18n.translate('editor.parkingInstructions') }}</span>
                       <textarea
                         formControlName="parkingInstructions"
-                        placeholder="Explain how guests can find and use the parking option."
+                        [placeholder]="i18n.translate('editor.parkingInstructions.placeholder')"
                       ></textarea>
                     </label>
                   </div>
@@ -370,33 +384,33 @@
                 </div>
                 @if (arrivalForm.controls.luggageKind.value === 'internal') {
                   <label class="field conditional-panel">
-                    <span>Storage instructions</span>
+                    <span>{{ i18n.translate('editor.storageInstructions') }}</span>
                     <textarea
                       formControlName="luggageInstructions"
-                      placeholder="Explain where and when guests can leave their luggage."
+                      [placeholder]="i18n.translate('editor.storageInstructions.placeholder')"
                     ></textarea>
                   </label>
                 } @else if (arrivalForm.controls.luggageKind.value === 'external-paid') {
                   <div class="form-grid form-grid--two conditional-panel">
                     <label class="field">
-                      <span>Locker service name</span>
+                      <span>{{ i18n.translate('editor.lockerServiceName') }}</span>
                       <input
                         formControlName="luggageProviderName"
-                        placeholder="Enter the nearby locker service name."
+                        [placeholder]="i18n.translate('editor.lockerServiceName.placeholder')"
                       />
                     </label>
                     <label class="field">
-                      <span>Locker address</span>
+                      <span>{{ i18n.translate('editor.lockerAddress') }}</span>
                       <textarea
                         formControlName="luggageAddress"
-                        placeholder="Enter the locker service address."
+                        [placeholder]="i18n.translate('editor.lockerAddress.placeholder')"
                       ></textarea>
                     </label>
                     <label class="field field--wide">
-                      <span>Locker instructions</span>
+                      <span>{{ i18n.translate('editor.lockerInstructions') }}</span>
                       <textarea
                         formControlName="luggageInstructions"
-                        placeholder="Explain booking, payment or opening-hour details."
+                        [placeholder]="i18n.translate('editor.lockerInstructions.placeholder')"
                       ></textarea>
                     </label>
                   </div>
@@ -415,10 +429,10 @@
               novalidate
             >
               <fieldset class="form-card">
-                <legend>Internet</legend>
+                <legend>{{ i18n.translate('editor.internet') }}</legend>
                 <label class="toggle-field">
                   <input type="checkbox" formControlName="hasWifi" />
-                  <span>Wi-Fi is available</span>
+                  <span>{{ i18n.translate('editor.wifiAvailable') }}</span>
                 </label>
                 @if (homeForm.controls.hasWifi.value) {
                   <div class="form-grid form-grid--two conditional-panel">
@@ -439,10 +453,10 @@
                       />
                     </label>
                     <label class="field field--wide">
-                      <span>Internet instructions</span>
+                      <span>{{ i18n.translate('editor.internetInstructions') }}</span>
                       <textarea
                         formControlName="wifiInstructions"
-                        placeholder="Add any useful connection or router instructions."
+                        [placeholder]="i18n.translate('editor.internetInstructions.placeholder')"
                       ></textarea>
                     </label>
                   </div>
@@ -450,7 +464,7 @@
               </fieldset>
 
               <fieldset class="form-card">
-                <legend>Home care</legend>
+                <legend>{{ i18n.translate('editor.homeCare') }}</legend>
                 <div class="form-grid form-grid--two">
                   <label class="field">
                     <span>{{ i18n.translate('editor.heating') }}</span>
@@ -474,23 +488,23 @@
                     ></textarea>
                   </label>
                   <label class="field">
-                    <span>Waste and recycling</span>
+                    <span>{{ i18n.translate('editor.waste') }}</span>
                     <textarea
                       formControlName="waste"
-                      placeholder="Explain where guests should place waste and recycling."
+                      [placeholder]="i18n.translate('editor.waste.placeholder')"
                     ></textarea>
                   </label>
                 </div>
               </fieldset>
 
               <fieldset class="form-card">
-                <legend>Stay support</legend>
+                <legend>{{ i18n.translate('editor.staySupport') }}</legend>
                 <div class="form-grid form-grid--two">
                   <label class="field">
                     <span>{{ i18n.translate('editor.hostName') }}</span>
                     <input
                       formControlName="hostName"
-                      placeholder="Enter the host name guests should see."
+                      [placeholder]="i18n.translate('editor.hostName.placeholder')"
                       autocomplete="name"
                     />
                   </label>
@@ -498,7 +512,7 @@
                     <span>{{ i18n.translate('editor.hostPhone') }}</span>
                     <input
                       formControlName="hostPhone"
-                      placeholder="Enter a guest support phone number."
+                      [placeholder]="i18n.translate('editor.hostPhone.placeholder')"
                       autocomplete="tel"
                       inputmode="tel"
                     />
@@ -507,7 +521,7 @@
                     <span>{{ i18n.translate('editor.hostEmail') }}</span>
                     <input
                       formControlName="hostEmail"
-                      placeholder="Enter a guest support email address."
+                      [placeholder]="i18n.translate('editor.hostEmail.placeholder')"
                       autocomplete="email"
                       inputmode="email"
                     />
@@ -535,7 +549,7 @@
                 <legend>{{ i18n.translate('editor.quietHours') }}</legend>
                 <label class="toggle-field">
                   <input type="checkbox" formControlName="hasQuietHours" />
-                  <span>Quiet hours apply</span>
+                  <span>{{ i18n.translate('editor.quietHoursApply') }}</span>
                 </label>
                 @if (rulesForm.controls.hasQuietHours.value) {
                   <div class="quiet-hours conditional-panel">
@@ -582,7 +596,9 @@
                       </label>
                     </div>
                     @if (rulesForm.controls.quietEndHour.hasError('identicalTime')) {
-                      <small class="field-error">Choose two different times.</small>
+                      <small class="field-error">{{
+                        i18n.translate('validation.differentTimes')
+                      }}</small>
                     }
                   </div>
                 }
@@ -658,7 +674,10 @@
                         (index + 1).toString().padStart(2, '0')
                       }}</span>
                       <span>
-                        <strong>{{ service.controls.title.value || 'New recommendation' }}</strong>
+                        <strong>{{
+                          service.controls.title.value ||
+                            i18n.translate('editor.recommendationTitle')
+                        }}</strong>
                         <small>{{ categoryLabel(service.controls.category.value) }}</small>
                       </span>
                       <app-icon
@@ -690,7 +709,9 @@
                             <label class="field">
                               <span>{{ i18n.translate('editor.transportType') }}</span>
                               <select formControlName="transportType">
-                                <option value="">Select transport type</option>
+                                <option value="">
+                                  {{ i18n.translate('editor.selectTransportType') }}
+                                </option>
                                 <option value="taxi">
                                   {{ i18n.translate('editor.transport.taxi') }}
                                 </option>
@@ -729,7 +750,7 @@
                 } @empty {
                   <div class="empty-services">
                     <app-icon name="map-pin" />
-                    <p>No nearby services added yet.</p>
+                    <p>{{ i18n.translate('editor.noNearbyServices') }}</p>
                   </div>
                 }
               </div>
@@ -806,16 +827,18 @@
                       >
                     </div>
                     @if (extrasForm.controls.breakfastEndHour.hasError('invalidRange')) {
-                      <small class="field-error">Choose an end time after the start time.</small>
+                      <small class="field-error">{{
+                        i18n.translate('validation.endAfterStart')
+                      }}</small>
                     }
                   </div>
                 }
                 @if (extrasForm.controls.breakfastKind.value !== 'unavailable') {
                   <label class="field conditional-panel">
-                    <span>Breakfast details</span>
+                    <span>{{ i18n.translate('editor.breakfastDetails') }}</span>
                     <textarea
                       formControlName="breakfastInstructions"
-                      placeholder="Explain what is included and how guests request breakfast."
+                      [placeholder]="i18n.translate('editor.breakfastDetails.placeholder')"
                     ></textarea>
                   </label>
                 }
@@ -825,13 +848,13 @@
                 <fieldset class="form-card tone-blue">
                   <legend>{{ i18n.translate('editor.lateCheckout') }}</legend>
                   <label class="toggle-field"
-                    ><input type="checkbox" formControlName="lateCheckoutAvailable" /><span
-                      >Available</span
-                    ></label
+                    ><input type="checkbox" formControlName="lateCheckoutAvailable" /><span>{{
+                      i18n.translate('editor.available')
+                    }}</span></label
                   >
                   @if (extrasForm.controls.lateCheckoutAvailable.value) {
                     <label class="field conditional-panel"
-                      ><span>Instructions</span
+                      ><span>{{ i18n.translate('editor.instructions') }}</span
                       ><textarea
                         formControlName="lateCheckoutInstructions"
                         [placeholder]="i18n.translate('editor.lateCheckout.placeholder')"
@@ -842,13 +865,13 @@
                 <fieldset class="form-card tone-green">
                   <legend>{{ i18n.translate('editor.familyEquipment') }}</legend>
                   <label class="toggle-field"
-                    ><input type="checkbox" formControlName="familyEquipmentAvailable" /><span
-                      >Available</span
-                    ></label
+                    ><input type="checkbox" formControlName="familyEquipmentAvailable" /><span>{{
+                      i18n.translate('editor.available')
+                    }}</span></label
                   >
                   @if (extrasForm.controls.familyEquipmentAvailable.value) {
                     <label class="field conditional-panel"
-                      ><span>Instructions</span
+                      ><span>{{ i18n.translate('editor.instructions') }}</span
                       ><textarea
                         formControlName="familyEquipmentInstructions"
                         [placeholder]="i18n.translate('editor.familyEquipment.placeholder')"
@@ -859,13 +882,13 @@
                 <fieldset class="form-card tone-pink">
                   <legend>{{ i18n.translate('editor.petStay') }}</legend>
                   <label class="toggle-field"
-                    ><input type="checkbox" formControlName="petStayAvailable" /><span
-                      >Available</span
-                    ></label
+                    ><input type="checkbox" formControlName="petStayAvailable" /><span>{{
+                      i18n.translate('editor.available')
+                    }}</span></label
                   >
                   @if (extrasForm.controls.petStayAvailable.value) {
                     <label class="field conditional-panel"
-                      ><span>Instructions</span
+                      ><span>{{ i18n.translate('editor.instructions') }}</span
                       ><textarea
                         formControlName="petStayInstructions"
                         [placeholder]="i18n.translate('editor.petStay.placeholder')"
@@ -876,12 +899,12 @@
               </div>
 
               <fieldset class="form-card special-requests-card">
-                <legend>Special requests</legend>
+                <legend>{{ i18n.translate('editor.specialRequests') }}</legend>
                 <label class="field">
-                  <span>How guests should contact the host</span>
+                  <span>{{ i18n.translate('editor.contactHostInstructions') }}</span>
                   <textarea
                     formControlName="specialRequests"
-                    placeholder="Explain how guests should contact the host about special requests."
+                    [placeholder]="i18n.translate('editor.contactHostInstructions.placeholder')"
                   ></textarea>
                 </label>
               </fieldset>
@@ -923,17 +946,17 @@
 
               <div class="form-grid form-grid--two">
                 <label class="field">
-                  <span>Key return</span>
+                  <span>{{ i18n.translate('editor.keyReturn') }}</span>
                   <textarea
                     formControlName="keyReturn"
-                    placeholder="Explain where guests should leave or return the keys."
+                    [placeholder]="i18n.translate('editor.keyReturn.placeholder')"
                   ></textarea>
                 </label>
                 <label class="field">
-                  <span>Rubbish</span>
+                  <span>{{ i18n.translate('editor.rubbish') }}</span>
                   <textarea
                     formControlName="rubbish"
-                    placeholder="Explain where guests should leave rubbish and recycling."
+                    [placeholder]="i18n.translate('editor.rubbish.placeholder')"
                   ></textarea>
                 </label>
                 <label class="field field--wide">
@@ -966,7 +989,9 @@
                     <div class="checkout-item" [formGroupName]="index">
                       <app-icon name="check" />
                       <label class="field">
-                        <span class="sr-only">Check-out item {{ index + 1 }}</span>
+                        <span class="sr-only">{{
+                          i18n.translate('editor.checkoutItem', { number: index + 1 })
+                        }}</span>
                         <input
                           formControlName="label"
                           [readonly]="item.controls.isDefault.value"
@@ -977,7 +1002,7 @@
                         <button
                           class="icon-button"
                           type="button"
-                          aria-label="Delete check-out item"
+                          [attr.aria-label]="i18n.translate('common.deleteItem')"
                           (click)="removeCheckoutItem(index)"
                         >
                           <app-icon name="trash" />

@@ -39,13 +39,13 @@ describe('GuestGuideHomePage', () => {
     const fixture = TestBed.createComponent(GuestGuideHomePage);
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
-    const headings = [...element.querySelectorAll('.guest-section > h2')].map((heading) =>
+    const headings = [...element.querySelectorAll('.guest-section-heading > h2')].map((heading) =>
       heading.textContent?.trim(),
     );
 
     expect(headings).toEqual([
+      'Essentials now',
       'Before you arrive',
-      'Essentials',
       'During your stay',
       'Explore the area',
       'Before you leave',

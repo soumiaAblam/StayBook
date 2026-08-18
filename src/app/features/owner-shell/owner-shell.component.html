@@ -1,6 +1,10 @@
 <div class="owner-shell">
-  <aside class="owner-navigation" aria-label="Owner navigation">
-    <a class="owner-brand" routerLink="/owner/properties" aria-label="StayBook properties">
+  <aside class="owner-navigation" [attr.aria-label]="i18n.translate('nav.ownerNavigation')">
+    <a
+      class="owner-brand"
+      routerLink="/owner/properties"
+      [attr.aria-label]="i18n.translate('nav.staybookProperties')"
+    >
       <img src="/assets/brand/staybook-logo-slogan.svg" alt="StayBook" width="970" height="260" />
     </a>
 
@@ -29,7 +33,13 @@
         </select>
       </label>
 
-      <button class="sign-out-button" type="button" (click)="signOut()">
+      <button
+        class="sign-out-button"
+        type="button"
+        (click)="signOut()"
+        [attr.aria-label]="i18n.translate('auth.signOut')"
+        [title]="i18n.translate('auth.signOut')"
+      >
         <app-icon name="log-out" />
         <span>{{ i18n.translate('auth.signOut') }}</span>
       </button>

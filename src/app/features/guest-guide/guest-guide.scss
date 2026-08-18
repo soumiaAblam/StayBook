@@ -1,15 +1,14 @@
 app-guest-guide-shell {
   display: block;
   min-block-size: 100dvh;
-  background:
-    radial-gradient(circle at 100% 0, rgb(21 111 231 / 9%), transparent 24rem), var(--color-canvas);
+  background: radial-gradient(circle at 100% 0, rgb(21 111 231 / 9%), transparent 24rem), #f8fcff;
 }
 
 .guest-guide {
   inline-size: min(100%, 48rem);
   min-block-size: 100dvh;
   margin-inline: auto;
-  background: var(--color-canvas);
+  background: #fbfdff;
   box-shadow: 0 0 3rem rgb(10 33 66 / 9%);
 }
 
@@ -18,14 +17,14 @@ app-guest-guide-shell {
   z-index: 20;
   inset-block-start: 0;
   display: grid;
-  min-block-size: 4.5rem;
-  grid-template-columns: minmax(2.75rem, 1fr) minmax(8rem, 11rem) minmax(2.75rem, 1fr);
+  min-block-size: 4.375rem;
+  grid-template-columns: 1.875rem minmax(0, 1fr) 1.875rem;
   align-items: center;
-  gap: var(--space-2);
-  padding: 0.5rem var(--space-4);
-  border-block-end: 1px solid var(--color-line);
-  background: rgb(255 255 255 / 96%);
-  backdrop-filter: blur(0.75rem);
+  gap: var(--space-3);
+  padding: 0.375rem 0.875rem 0.25rem;
+  border-block-end: 1px solid #e5edf6;
+  background: var(--color-white);
+  box-shadow: 0 0.125rem 0.75rem rgb(18 55 95 / 5%);
 }
 
 .guest-header__side {
@@ -38,20 +37,21 @@ app-guest-guide-shell {
 }
 
 .guest-header__brand img {
-  inline-size: 100%;
-  block-size: 3rem;
+  inline-size: min(11.25rem, 100%);
+  block-size: auto;
   object-fit: contain;
   object-position: center;
 }
 
 .guest-header__back {
   display: inline-grid;
-  inline-size: var(--target-size);
-  block-size: var(--target-size);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-round);
-  color: var(--color-navy);
-  background: var(--color-white);
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: var(--color-blue-strong);
+  background: rgb(255 255 255 / 88%);
+  font-size: 1.1875rem;
   place-items: center;
 }
 
@@ -60,15 +60,17 @@ app-guest-guide-shell {
 }
 
 .guest-language select {
-  inline-size: 3.75rem;
-  min-block-size: var(--target-size);
-  padding: 0.4rem 0.25rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-round);
-  color: var(--color-navy);
-  background: var(--color-white);
-  font-size: var(--text-xs);
-  font-weight: 750;
+  inline-size: 1.875rem;
+  min-block-size: 1.875rem;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 0.4375rem;
+  color: var(--color-blue-strong);
+  background: rgb(255 255 255 / 88%);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  text-align: center;
+  appearance: none;
 }
 
 .guest-main {
