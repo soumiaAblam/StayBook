@@ -2,6 +2,7 @@
   @if (detail(); as info) {
     <header class="guest-detail__heading tone-{{ presentation.tone }}">
       <span class="guest-detail__icon"><app-icon [name]="presentation.icon" /></span>
+      <p>{{ i18n.translate(sectionTitleKey()) }}</p>
       <h1>{{ i18n.translate(presentation.titleKey) }}</h1>
     </header>
 

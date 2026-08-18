@@ -6,7 +6,7 @@
   <section class="owner-workspace review-page">
     <header class="review-header">
       <div>
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <nav class="breadcrumbs" [attr.aria-label]="i18n.translate('common.breadcrumb')">
           <a routerLink="/owner/properties">{{ i18n.translate('nav.properties') }}</a>
           <span aria-hidden="true">/</span>
           <span>{{ currentProperty.overview.name || i18n.translate('properties.add') }}</span>
@@ -30,7 +30,7 @@
           <section class="completion-card" aria-labelledby="completion-title">
             <div class="completion-heading">
               <div>
-                <p class="review-label">Guide completion</p>
+                <p class="review-label">{{ i18n.translate('review.completion') }}</p>
                 <h2 id="completion-title">{{ guideCompletion.percentage }}%</h2>
               </div>
               <span class="completion-count">
@@ -40,7 +40,7 @@
             <div
               class="progress"
               role="progressbar"
-              aria-label="Guide completion"
+              [attr.aria-label]="i18n.translate('review.completion')"
               aria-valuemin="0"
               aria-valuemax="100"
               [attr.aria-valuenow]="guideCompletion.percentage"
@@ -87,7 +87,7 @@
           </ul>
         </div>
 
-        <aside class="guest-preview-card" aria-label="Guest preview">
+        <aside class="guest-preview-card" [attr.aria-label]="i18n.translate('review.guestPreview')">
           <div class="preview-topbar"><span></span><span></span><span></span></div>
           <div class="preview-hero">
             <img
@@ -96,8 +96,10 @@
               width="970"
               height="260"
             />
-            <p>Your stay guide</p>
-            <h2>{{ currentProperty.overview.name || 'Your property' }}</h2>
+            <p>{{ i18n.translate('review.stayGuide') }}</p>
+            <h2>
+              {{ currentProperty.overview.name || i18n.translate('review.propertyFallback') }}
+            </h2>
             <span>{{
               currentProperty.overview.cityOrArea || i18n.translate('common.notAvailable')
             }}</span>

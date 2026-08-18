@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import type { TranslationKey } from '../../../core/i18n/catalogs';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { AccountWorkspaceRepository } from '../../../core/workspace';
 import {
@@ -78,11 +79,45 @@ export class GuideReviewPage {
   }
 
   missingFieldLabel(path: string): string {
-    const label = path.split('.').at(-1) ?? path;
-    return label
-      .replaceAll(/([a-z])([A-Z])/g, '$1 $2')
-      .replaceAll('-', ' ')
-      .replace(/^./, (character) => character.toUpperCase());
+    const exactKeys: Readonly<Record<string, TranslationKey>> = {
+      'overview.name': 'editor.propertyName',
+      'overview.cityOrArea': 'editor.city',
+      'overview.welcomeMessage': 'editor.welcomeMessage',
+      'arrivalAccess.checkInTime': 'editor.checkInTime',
+      'arrivalAccess.location.writtenAddress': 'editor.homeAddress',
+      'arrivalAccess.homeAccess.instructions': 'editor.accessInstructions',
+      'arrivalAccess.parking.address': 'editor.parking.address',
+      homeEssentials: 'editor.home',
+      localGuide: 'editor.nearbyServices',
+      'checkout.checkoutTime': 'editor.checkOutTime',
+      'checkout.checklist': 'editor.checkoutChecklist',
+    };
+    const exactKey = exactKeys[path];
+    if (exactKey) {
+      return this.i18n.translate(exactKey);
+    }
+
+    if (path.startsWith('houseRules.quietHours')) {
+      return this.i18n.translate('editor.quietHours');
+    }
+    if (path.startsWith('extras.breakfast')) {
+      return this.i18n.translate('editor.breakfastHours');
+    }
+    if (path.startsWith('localGuide.')) {
+      const serviceKeys: Readonly<Record<string, TranslationKey>> = {
+        title: 'editor.recommendationTitle',
+        category: 'editor.category',
+        transportType: 'editor.transportType',
+        distanceFromProperty: 'editor.distance',
+        whyUseful: 'editor.usefulReason',
+      };
+      const serviceKey = serviceKeys[path.split('.').at(-1) ?? ''];
+      if (serviceKey) {
+        return this.i18n.translate(serviceKey);
+      }
+    }
+
+    return this.i18n.translate('review.missing');
   }
 
   private loadProperty(propertyId: string): void {

@@ -21,12 +21,11 @@ describe('application routing decisions', () => {
     expect(target.toString()).toBe('/choose-language');
   });
 
-  it('starts with sign in after a locale has been selected', () => {
+  it('still starts with language selection after a locale has been selected', () => {
     localStorage.setItem(localeStorageKey, 'en-GB');
-
     const target = TestBed.runInInjectionContext(() => applicationRootRedirect({} as never));
 
-    expect(target.toString()).toBe('/auth/sign-in');
+    expect(target.toString()).toBe('/choose-language');
   });
 
   it('starts with the property dashboard for an active session', () => {

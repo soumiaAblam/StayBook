@@ -12,6 +12,7 @@ interface GuestHomeCard {
   readonly path: string;
   readonly icon: IconName;
   readonly tone: 'blue' | 'green' | 'pink' | 'purple' | 'yellow';
+  readonly hint?: TranslationKey;
 }
 
 @Component({
@@ -27,19 +28,38 @@ export class GuestGuideHomePage {
   protected readonly copy = inject(GuestCopyService);
 
   protected readonly beforeArrivalCards: readonly GuestHomeCard[] = [
+    { label: 'guest.checkIn', path: 'check-in', icon: 'door', tone: 'blue' },
     { label: 'guest.homeAddress', path: 'home-address', icon: 'map-pin', tone: 'purple' },
     { label: 'guest.luggage', path: 'luggage', icon: 'luggage', tone: 'yellow' },
     { label: 'guest.parking', path: 'parking', icon: 'parking', tone: 'blue' },
   ];
 
   protected readonly essentialCards: readonly GuestHomeCard[] = [
-    { label: 'guest.checkIn', path: 'check-in', icon: 'door', tone: 'blue' },
-    { label: 'guest.homeAccess', path: 'check-in', icon: 'key', tone: 'green' },
-    { label: 'guest.getHelp', path: 'help', icon: 'help-circle', tone: 'pink' },
+    {
+      label: 'guest.checkIn',
+      hint: 'guest.card.arrivalHint',
+      path: 'check-in',
+      icon: 'door',
+      tone: 'blue',
+    },
+    {
+      label: 'guest.internet',
+      hint: 'guest.card.internetHint',
+      path: 'internet',
+      icon: 'wifi',
+      tone: 'green',
+    },
+    {
+      label: 'guest.getHelp',
+      hint: 'guest.card.helpHint',
+      path: 'help',
+      icon: 'help-circle',
+      tone: 'pink',
+    },
   ];
 
   protected readonly duringStayCards: readonly GuestHomeCard[] = [
-    { label: 'guest.internet', path: 'internet', icon: 'wifi', tone: 'blue' },
+    { label: 'guest.homeAccess', path: 'check-in', icon: 'key', tone: 'green' },
     { label: 'guest.homeCare', path: 'home-care', icon: 'home-care', tone: 'yellow' },
     { label: 'guest.houseRules', path: 'house-rules', icon: 'list', tone: 'green' },
     { label: 'guest.extras', path: 'extras', icon: 'sparkles', tone: 'pink' },

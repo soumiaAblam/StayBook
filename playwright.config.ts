@@ -8,14 +8,26 @@ export default defineConfig({
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4200',
-    bypassCSP: true,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'desktop-chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'mobile-390',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'mobile-320',
+      use: { viewport: { width: 320, height: 760 }, isMobile: true, hasTouch: true },
     },
   ],
   webServer: {

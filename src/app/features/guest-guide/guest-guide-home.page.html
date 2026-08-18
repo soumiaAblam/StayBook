@@ -5,7 +5,12 @@
         <img class="guest-hero__image" [src]="guide.coverImageDataUrl" [alt]="guide.propertyName" />
       } @else {
         <div class="guest-hero__fallback" aria-hidden="true">
-          <app-icon name="home" />
+          <div class="guest-hero-house">
+            <b></b>
+            <i></i>
+            <i></i>
+            <em></em>
+          </div>
         </div>
       }
       <div class="guest-hero__overlay">
@@ -31,60 +36,82 @@
     }
 
     <section class="guest-section" aria-labelledby="before-arrival-title">
-      <h2 id="before-arrival-title">{{ i18n.translate('guest.beforeArrival') }}</h2>
-      <div class="guest-card-grid">
-        @for (card of beforeArrivalCards; track card.path) {
-          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
-            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+      <div class="guest-section-heading">
+        <h2 id="before-arrival-title">{{ i18n.translate('guest.essentialsNow') }}</h2>
+        <span>{{ i18n.translate('guest.startHere') }}</span>
+      </div>
+      <div class="essential-grid">
+        @for (card of essentialCards; track card.label) {
+          <a class="essential-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-card-icon"><app-icon [name]="card.icon" /></span>
             <strong>{{ i18n.translate(card.label) }}</strong>
-            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+            @if (card.hint) {
+              <small>{{ i18n.translate(card.hint) }}</small>
+            }
           </a>
         }
       </div>
     </section>
 
-    <section class="guest-section" aria-labelledby="essentials-title">
-      <h2 id="essentials-title">{{ i18n.translate('guest.essentials') }}</h2>
-      <div class="guest-card-grid">
-        @for (card of essentialCards; track card.label) {
-          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
-            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+    <section class="guest-section" aria-labelledby="before-you-arrive-title">
+      <div class="guest-section-heading">
+        <h2 id="before-you-arrive-title">{{ i18n.translate('guest.beforeArrival') }}</h2>
+      </div>
+      <div class="essential-grid">
+        @for (card of beforeArrivalCards; track card.path) {
+          <a class="essential-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-card-icon"><app-icon [name]="card.icon" /></span>
             <strong>{{ i18n.translate(card.label) }}</strong>
-            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+            @if (card.hint) {
+              <small>{{ i18n.translate(card.hint) }}</small>
+            }
           </a>
         }
       </div>
     </section>
 
     <section class="guest-section" aria-labelledby="during-stay-title">
-      <h2 id="during-stay-title">{{ i18n.translate('guest.duringStay') }}</h2>
-      <div class="guest-card-grid">
+      <div class="guest-section-heading">
+        <h2 id="during-stay-title">{{ i18n.translate('guest.duringStay') }}</h2>
+      </div>
+      <div class="essential-grid">
         @for (card of duringStayCards; track card.path) {
-          <a class="guest-category-card tone-{{ card.tone }}" [routerLink]="card.path">
-            <span class="guest-category-card__icon"><app-icon [name]="card.icon" /></span>
+          <a class="essential-card tone-{{ card.tone }}" [routerLink]="card.path">
+            <span class="guest-card-icon"><app-icon [name]="card.icon" /></span>
             <strong>{{ i18n.translate(card.label) }}</strong>
-            <app-icon class="guest-category-card__arrow" name="chevron-right" />
+            @if (card.hint) {
+              <small>{{ i18n.translate(card.hint) }}</small>
+            }
           </a>
         }
       </div>
     </section>
 
     <section class="guest-section" aria-labelledby="explore-title">
-      <h2 id="explore-title">{{ i18n.translate('guest.explore') }}</h2>
-      <a class="guest-explore-card tone-purple" routerLink="local-guide">
-        <span class="guest-explore-card__icon"><app-icon name="map-pin" /></span>
-        <strong>{{ i18n.translate('guest.localGuide') }}</strong>
-        <app-icon class="guest-explore-card__arrow" name="arrow-right" />
+      <div class="guest-section-heading">
+        <h2 id="explore-title">{{ i18n.translate('guest.explore') }}</h2>
+      </div>
+      <a class="local-guide-banner tone-purple" routerLink="local-guide">
+        <span class="guide-row-icon"><app-icon name="map-pin" /></span>
+        <span>
+          <strong>{{ i18n.translate('guest.localGuide') }}</strong>
+          <small>{{ i18n.translate('guest.localGuideHint') }}</small>
+        </span>
+        <app-icon name="chevron-right" />
       </a>
     </section>
 
     <section class="guest-section" aria-labelledby="before-leave-title">
-      <h2 id="before-leave-title">{{ i18n.translate('guest.beforeLeave') }}</h2>
-      <a class="guest-category-card guest-category-card--wide tone-green" routerLink="checkout">
-        <span class="guest-category-card__icon"><app-icon name="checkout" /></span>
-        <strong>{{ i18n.translate('guest.checkout') }}</strong>
-        <app-icon class="guest-category-card__arrow" name="chevron-right" />
-      </a>
+      <div class="guest-section-heading">
+        <h2 id="before-leave-title">{{ i18n.translate('guest.beforeLeave') }}</h2>
+      </div>
+      <div class="essential-grid">
+        <a class="essential-card tone-green" routerLink="checkout">
+          <span class="guest-card-icon"><app-icon name="checkout" /></span>
+          <strong>{{ i18n.translate('guest.checkout') }}</strong>
+          <small>{{ i18n.translate('guest.card.checkoutHint') }}</small>
+        </a>
+      </div>
     </section>
   } @else {
     <app-guest-unavailable />
