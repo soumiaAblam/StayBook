@@ -50,29 +50,34 @@ function createCompleteProperty(now: Date): Property {
     ...property,
     overview: {
       ...property.overview,
-      name: 'Azure Courtyard',
-      cityOrArea: 'Seabreeze Quarter',
+      name: 'Sevilla Cosy place',
+      cityOrArea: 'Casco histórico',
+      coverImage: {
+        dataUrl: '/assets/house2.jpg',
+        mimeType: 'image/jpeg',
+        altText: 'Sevilla Cosy place',
+      },
       propertyType: 'apartment',
-      welcomeMessage: 'Welcome to this fictional StayBook demo property.',
+      welcomeMessage: 'Welcome to this cosy and elegant property.',
     },
     arrivalAccess: {
       ...property.arrivalAccess,
       checkInTime: createTime24('15:00'),
-      checkInInstructions: 'Please arrive through the main courtyard entrance.',
+      checkInInstructions: 'Please arrive through the main  entrance.',
       location: {
-        writtenAddress: '12 Sunlit Lane, Seabreeze Quarter (fictional)',
+        writtenAddress: 'Calle la sevillana 3 , casco historico (fictional)',
         mapReference: '',
-        directions: 'Follow the blue demo signs after entering Sunlit Lane.',
+        directions: 'Follow the blue demo signs after entering Calle sevillana',
       },
       homeAccess: {
         method: 'meet-host',
-        instructions: 'The fictional demo host will meet you by the courtyard door.',
+        instructions: 'The host will meet you by the entrance door.',
         doorCode: '',
         lockboxCode: '',
       },
       parking: {
         kind: 'nearby-free',
-        address: 'Demo Parking Square, Seabreeze Quarter (fictional)',
+        address: 'Demo Parking Square, casco histórico (fictional)',
         instructions: 'Use any space marked for demo visitors.',
       },
       luggage: {
@@ -119,7 +124,7 @@ function createCompleteProperty(now: Date): Property {
     checkout: {
       ...property.checkout,
       checkoutTime: createTime24('11:00'),
-      keyReturn: 'Hand the demo key to the host at the courtyard door.',
+      keyReturn: 'Hand the demo key to the host at the entrance door.',
       rubbish: 'Place rubbish in the labelled recycling area.',
       departureNote: 'Check each item for your own organisation before leaving.',
     },
@@ -143,8 +148,8 @@ function createIncompleteProperty(now: Date): Property {
     ...property,
     overview: {
       ...property.overview,
-      name: 'Olive Garden Studio',
-      cityOrArea: 'Old Harbour District',
+      name: 'Carmen Studio ',
+      cityOrArea: 'Barrio Salamanca, Madrid',
       propertyType: 'room',
       welcomeMessage: 'A partially prepared fictional guest guide.',
     },
@@ -172,7 +177,7 @@ function createIncompleteProperty(now: Date): Property {
     localGuide: [
       {
         id: 'fixture-supermarket-market',
-        title: 'Harbour Market',
+        title: 'Salamanca Market',
         category: 'supermarket',
         distanceFromProperty: '10-minute walk',
         whyUseful: 'A fictional option for everyday groceries.',
@@ -204,18 +209,18 @@ function createNearlyEmptyProperty(now: Date): Property {
     ...property,
     overview: {
       ...property.overview,
-      name: 'Cactus House Draft',
-      cityOrArea: 'Desert View (fictional)',
+      name: 'Cactus Almeria House',
+      cityOrArea: 'Carretera andalucia 345, Almeria',
       coverImage: {
         dataUrl: '/assets/house.jpg',
         mimeType: 'image/jpeg',
-        altText: 'Cactus House Draft',
+        altText: 'Cactus House View',
       },
     },
     arrivalAccess: {
       ...property.arrivalAccess,
       location: {
-        writtenAddress: 'Desert View, California (fictional)',
+        writtenAddress: 'Carretera andalucia 345, Almeria',
         mapReference: 'https://maps.app.goo.gl/zje4hatvhzWc91rAA',
         directions: 'Use the desert trail after the first bend in the road.',
       },
